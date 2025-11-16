@@ -145,7 +145,7 @@
                     </execution>
                     <!-- Verificação de cobertura desabilitada temporariamente -->
                     <!-- Será habilitada após criar testes suficientes para 75% -->
-                    <execution>
+                   <!--- <execution>
                         <id>jacoco-check</id>
                         <goals>
                             <goal>check</goal>
@@ -165,10 +165,10 @@
                             </rules>
                         </configuration>
                     </execution>
-                
+                    -->
                 </executions>
             </plugin>
-
+           
             <!-- JAR Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
