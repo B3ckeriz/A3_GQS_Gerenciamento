@@ -15,6 +15,7 @@
 	<description>Sistema universitário para gestão de alunos e professores - A3 Gestão e Qualidade de Software</description>
 
 	<properties>
+		<!-- MAVEN -->
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -109,34 +110,29 @@
 			<!-- COMPILAÇÃO -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.12.1</version>
-				<configuration>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-								<configuration>
-									<archive>
-										<manifest>
-											<mainClass>
-												principal.Principal
-											</mainClass>
-										</manifest>
-									</archive>
-									<descriptorRefs>
-										<descriptorRef>jar-with-dependencies</descriptorRef>
-									</descriptorRefs>
-								</configuration>
-							</execution>
-						</executions>
-					<source>21</source>
-					<target>21</target>
-					<release>21</release>
-				</configuration>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.6.0</version>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>Principal.Principal</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+
 
 			<!-- SUREFIRE (TESTES UNITÁRIOS) -->
 			<plugin>
