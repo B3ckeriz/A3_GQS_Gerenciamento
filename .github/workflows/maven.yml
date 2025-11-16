@@ -19,7 +19,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-        cache: maven
 
     - name: Build and Test with Maven
       run: mvn -B clean verify
