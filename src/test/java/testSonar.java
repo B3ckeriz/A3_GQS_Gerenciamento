@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 /**
  *
  * @author Becker
- */
+ */ 
 public class testSonar {
     
     public testSonar() {
