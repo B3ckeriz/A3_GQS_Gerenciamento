@@ -23,20 +23,21 @@ public class AlunoDAO {
     public int maiorID() throws SQLException {
 
         int maiorID = 0;
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT MAX(id) id FROM tb_alunos");
-            res.next();
-            maiorID = res.getInt("id");
 
-            stmt.close();
-
-        } catch (SQLException ex) {
-        }
-        
-        return maiorID;
+try (Statement stmt = this.getConexao().createStatement();
+     ResultSet res = stmt.executeQuery("SELECT MAX(id) id FROM tb_alunos")) {
+    
+    if (res.next()) {
+        maiorID = res.getInt("id");
     }
     
+} catch (SQLException ex) {
+    // Log do erro (recomendado adicionar logging)
+    System.err.println("Erro ao buscar maior ID: " + ex.getMessage());
+}
+
+return maiorID; }
+
     // Estabelece a conexão com o banco de dados SQLite
     public Connection getConexao() {
 
@@ -90,34 +91,33 @@ public class AlunoDAO {
     }
 
     // Retorna a lista de alunos do banco de dados
-    public ArrayList getMinhaLista() {
+   
+    public ArrayList<Aluno> getMinhaLista() {
+    MinhaLista.clear(); // Limpa o ArrayList
+    
+    String sql = "SELECT * FROM tb_alunos";
+    
+    try (Statement stmt = this.getConexao().createStatement();
+         ResultSet res = stmt.executeQuery(sql)) {
         
-        MinhaLista.clear(); // Limpa o ArrayList
-
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM tb_alunos");
-            while (res.next()) {
-
-                String curso = res.getString("curso");
-                int fase = res.getInt("fase");
-                int id = res.getInt("id");
-                String nome = res.getString("nome");
-                int idade = res.getInt("idade");
-
-                Aluno objeto = new Aluno(curso, fase, id, nome, idade);
-
-                MinhaLista.add(objeto);
-            }
-
-            stmt.close();
-
-        } catch (SQLException ex) {
+        while (res.next()) {
+            String curso = res.getString("curso");
+            int fase = res.getInt("fase");
+            int id = res.getInt("id");
+            String nome = res.getString("nome");
+            int idade = res.getInt("idade");
+            
+            Aluno objeto = new Aluno(curso, fase, id, nome, idade);
+            MinhaLista.add(objeto);
         }
-
-        return MinhaLista;
+        
+    } catch (SQLException ex) {
+        // Log do erro
+        System.err.println("Erro ao buscar lista de alunos: " + ex.getMessage());
     }
-
+    
+    return MinhaLista;
+}
     // Cadastra novo aluno
     public boolean InsertAlunoBD(Aluno objeto) {
         String sql = "INSERT INTO tb_alunos(id,nome,idade,curso,fase) VALUES(?,?,?,?,?)";
@@ -143,18 +143,21 @@ public class AlunoDAO {
     }
 
     // Deleta um aluno específico pelo seu campo ID
+   
     public boolean DeleteAlunoBD(int id) {
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            stmt.executeUpdate("DELETE FROM tb_alunos WHERE id = " + id);
-            stmt.close();            
-            
-        } catch (SQLException erro) {
-        }
+    String sql = "DELETE FROM tb_alunos WHERE id = ?";
+    
+    try (PreparedStatement pstmt = this.getConexao().prepareStatement(sql)) {
+        pstmt.setInt(1, id);
         
-        return true;
+        int rowsAffected = pstmt.executeUpdate();
+        return rowsAffected > 0; // Retorna true se deletou alguma linha
+        
+    } catch (SQLException erro) {
+        System.err.println("Erro ao deletar aluno: " + erro.getMessage());
+        return false;
     }
-
+}
     // Edita um aluno específico pelo seu campo ID
     public boolean UpdateAlunoBD(Aluno objeto) {
 
@@ -181,25 +184,28 @@ public class AlunoDAO {
     
     // Carrega as informações de um aluno específico com base no ID
     public Aluno carregaAluno(int id) {
+    String sql = "SELECT * FROM tb_alunos WHERE id = ?";
+    
+    try (PreparedStatement pstmt = this.getConexao().prepareStatement(sql)) {
+        pstmt.setInt(1, id);
         
-        Aluno objeto = new Aluno();
-        objeto.setId(id);
-        
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM tb_alunos WHERE id = " + id);
-            res.next();
-
-            objeto.setNome(res.getString("nome"));
-            objeto.setIdade(res.getInt("idade"));
-            objeto.setCurso(res.getString("curso"));
-            objeto.setFase(res.getInt("fase"));
-
-            stmt.close();            
-            
-        } catch (SQLException erro) {
+        try (ResultSet res = pstmt.executeQuery()) {
+            if (res.next()) {
+                Aluno objeto = new Aluno();
+                objeto.setId(id);
+                objeto.setNome(res.getString("nome"));
+                objeto.setIdade(res.getInt("idade"));
+                objeto.setCurso(res.getString("curso"));
+                objeto.setFase(res.getInt("fase"));
+                
+                return objeto;
+            }
         }
         
-        return objeto;
+    } catch (SQLException erro) {
+        System.err.println("Erro ao carregar aluno: " + erro.getMessage());
     }
+    
+    return null; // Retorna null se não encontrou
+}
 }
