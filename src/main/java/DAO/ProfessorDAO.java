@@ -8,8 +8,7 @@ import java.util.logging.Logger;
 public class ProfessorDAO {
 
     private static final Logger logger = Logger.getLogger(ProfessorDAO.class.getName());
-
-    public static ArrayList<Professor> MinhaLista2 = new ArrayList<>();
+    private static final ArrayList<Professor> MinhaLista2 = new ArrayList<>();
 
     public ProfessorDAO() {
         criarTabelaSeNecessario();
@@ -17,24 +16,29 @@ public class ProfessorDAO {
 
     public int maiorID() throws SQLException {
         int maiorID = 0;
+        String sql = "SELECT MAX(id) id FROM tb_professores";
 
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT MAX(id) id FROM tb_professores");
-            res.next();
-            maiorID = res.getInt("id");
-            stmt.close();
+        try (Connection conn = this.getConexao();
+             Statement stmt = conn.createStatement();
+             ResultSet res = stmt.executeQuery(sql)) {
 
+            if (res.next()) {
+                maiorID = res.getInt("id");
+            }
         } catch (SQLException ex) {
+            logger.severe("Erro ao buscar maior ID: " + ex.getMessage());
+            throw ex;
         }
-
         return maiorID;
     }
 
+    // Conexão com SQLite
     public static Connection getConnection() {
         try {
+            // SQL em memórias
             String url = System.getenv("DATABASE_URL");
             if (url == null || url.isEmpty()) {
+                //SQL Local
                 url = "jdbc:sqlite:database.db";
             }
 
@@ -42,7 +46,7 @@ public class ProfessorDAO {
             return DriverManager.getConnection(url);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao conectar com o banco de dados", e);
         }
     }
 
@@ -50,7 +54,7 @@ public class ProfessorDAO {
         return getConnection();
     }
 
-
+// Cria tabela se necessário
     private void criarTabelaSeNecessario() {
         String sqlProfessores = "CREATE TABLE IF NOT EXISTS tb_professores (" +
                 "id INTEGER PRIMARY KEY, " +
@@ -69,17 +73,18 @@ public class ProfessorDAO {
             logger.info("Tabela tb_professores verificada/criada!");
 
         } catch (SQLException e) {
-            logger.info("Erro ao criar tabelas: " + e.getMessage());
+            logger.severe("Erro ao criar tabelas: " + e.getMessage());
+            throw new RuntimeException("Erro ao criar tabela", e);
         }
     }
 
-    public ArrayList getMinhaLista() {
-
+    public ArrayList<Professor> getMinhaLista() {
         MinhaLista2.clear();
+        String sql = "SELECT * FROM tb_professores";
 
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM tb_professores");
+        try (Connection conn = this.getConexao();
+             Statement stmt = conn.createStatement();
+             ResultSet res = stmt.executeQuery(sql)) {
 
             while (res.next()) {
                 String campus = res.getString("campus");
@@ -96,9 +101,9 @@ public class ProfessorDAO {
                 MinhaLista2.add(objeto);
             }
 
-            stmt.close();
-
         } catch (SQLException ex) {
+            logger.severe("Erro ao buscar lista de professores: " + ex.getMessage());
+            throw new RuntimeException("Erro ao buscar professores", ex);
         }
 
         return MinhaLista2;
@@ -107,8 +112,8 @@ public class ProfessorDAO {
     public boolean InsertProfessorBD(Professor objeto) {
         String sql = "INSERT INTO tb_professores(id,nome,idade,campus,cpf,contato,titulo,salario) VALUES(?,?,?,?,?,?,?,?)";
 
-        try {
-            PreparedStatement stmt = this.getConexao().prepareStatement(sql);
+        try (Connection conn = this.getConexao();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, objeto.getId());
             stmt.setString(2, objeto.getNome());
@@ -119,34 +124,36 @@ public class ProfessorDAO {
             stmt.setString(7, objeto.getTitulo());
             stmt.setInt(8, objeto.getSalario());
 
-            stmt.execute();
-            stmt.close();
-
-            return true;
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
 
         } catch (SQLException erro) {
-            throw new RuntimeException(erro);
+            logger.severe("Erro ao inserir professor: " + erro.getMessage());
+            throw new RuntimeException("Erro ao inserir professor", erro);
         }
     }
 
     public boolean DeleteProfessorBD(int id) {
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            stmt.executeUpdate("DELETE FROM tb_professores WHERE id = " + id);
-            stmt.close();
+        String sql = "DELETE FROM tb_professores WHERE id = ?";
 
+        try (Connection conn = this.getConexao();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException erro) {
+            logger.severe("Erro ao deletar professor ID " + id + ": " + erro.getMessage());
+            throw new RuntimeException("Erro ao deletar professor", erro);
         }
-
-        return true;
     }
 
     public boolean UpdateProfessorBD(Professor objeto) {
 
         String sql = "UPDATE tb_professores set nome = ? ,idade = ? ,campus = ? ,cpf = ? ,contato = ? ,titulo = ? ,salario = ? WHERE id = ?";
 
-        try {
-            PreparedStatement stmt = this.getConexao().prepareStatement(sql);
+        try (Connection conn = this.getConexao();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, objeto.getNome());
             stmt.setInt(2, objeto.getIdade());
@@ -157,38 +164,40 @@ public class ProfessorDAO {
             stmt.setInt(7, objeto.getSalario());
             stmt.setInt(8, objeto.getId());
 
-            stmt.execute();
-            stmt.close();
-
-            return true;
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
 
         } catch (SQLException erro) {
-            throw new RuntimeException(erro);
+            logger.severe("Erro ao atualizar professor ID " + objeto.getId() + ": " + erro.getMessage());
+            throw new RuntimeException("Erro ao atualizar professor", erro);
         }
     }
 
     public Professor carregaProfessor(int id) {
-
+        String sql = "SELECT * FROM tb_professores WHERE id = ?";
         Professor objeto = new Professor();
         objeto.setId(id);
 
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM tb_professores WHERE id = " + id);
+        try (Connection conn = this.getConexao();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            res.next();
+            stmt.setInt(1, id);
 
-            objeto.setNome(res.getString("nome"));
-            objeto.setIdade(res.getInt("idade"));
-            objeto.setCampus(res.getString("campus"));
-            objeto.setCpf(res.getString("cpf"));
-            objeto.setContato(res.getString("contato"));
-            objeto.setTitulo(res.getString("titulo"));
-            objeto.setSalario(res.getInt("salario"));
-
-            stmt.close();
+            try (ResultSet res = stmt.executeQuery()) {
+                if (res.next()) {
+                    objeto.setNome(res.getString("nome"));
+                    objeto.setIdade(res.getInt("idade"));
+                    objeto.setCampus(res.getString("campus"));
+                    objeto.setCpf(res.getString("cpf"));
+                    objeto.setContato(res.getString("contato"));
+                    objeto.setTitulo(res.getString("titulo"));
+                    objeto.setSalario(res.getInt("salario"));
+                }
+            }
 
         } catch (SQLException erro) {
+            logger.severe("Erro ao carregar professor ID " + id + ": " + erro.getMessage());
+            throw new RuntimeException("Erro ao carregar professor", erro);
         }
         return objeto;
     }
