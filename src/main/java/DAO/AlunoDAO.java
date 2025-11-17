@@ -1,6 +1,7 @@
 package DAO;
 
 import Model.Aluno;
+import exceptions.DatabaseException;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -31,24 +32,31 @@ public class AlunoDAO {
 
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Erro ao buscar maior ID", ex);
-            throw new RuntimeException("Erro ao buscar maior ID", ex);
+            throw new DatabaseException("Erro ao buscar maior ID", ex);
         }
 
         return maiorID;
     }
 
-    public static Connection getConexao() {
+    public static Connection getConnection() {
         try {
             String url = System.getenv("DATABASE_URL");
+
             if (url == null || url.isEmpty()) {
-                // Usa banco em memória como fallback
-                url = "jdbc:sqlite::memory:";
+                url = "jdbc:sqlite:database.db";
             }
-            System.out.println("URL utilizada: " + url);
+
+            logger.info("URL utilizada: " + url);
             return DriverManager.getConnection(url);
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.SEVERE, "Erro ao conectar ao banco", e);
+            throw new DatabaseException("Erro ao conectar ao banco", e);
         }
+    }
+
+    public Connection getConexao() {
+        return getConnection();
     }
 
     private void criarTabelaSeNecessario() {
@@ -70,7 +78,7 @@ public class AlunoDAO {
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao criar tabela tb_alunos", e);
-            throw new RuntimeException("Erro ao criar tabela tb_alunos", e);
+            throw new DatabaseException("Erro ao criar tabela tb_alunos", e);
         }
     }
 
@@ -96,7 +104,7 @@ public class AlunoDAO {
 
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Erro ao carregar lista de alunos", ex);
-            throw new RuntimeException("Erro ao carregar lista de alunos", ex);
+            throw new DatabaseException("Erro ao carregar lista de alunos", ex);
         }
 
         return MinhaLista;
@@ -119,7 +127,7 @@ public class AlunoDAO {
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao inserir aluno", e);
-            throw new RuntimeException("Erro ao inserir aluno", e);
+            throw new DatabaseException("Erro ao inserir aluno", e);
         }
     }
 
@@ -134,7 +142,7 @@ public class AlunoDAO {
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao deletar aluno", e);
-            throw new RuntimeException("Erro ao deletar aluno", e);
+            throw new DatabaseException("Erro ao deletar aluno", e);
         }
 
         return true;
@@ -161,7 +169,7 @@ public class AlunoDAO {
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao atualizar aluno", e);
-            throw new RuntimeException("Erro ao atualizar aluno", e);
+            throw new DatabaseException("Erro ao atualizar aluno", e);
         }
     }
 
@@ -186,7 +194,7 @@ public class AlunoDAO {
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao carregar aluno", e);
-            throw new RuntimeException("Erro ao carregar aluno", e);
+            throw new DatabaseException("Erro ao carregar aluno", e);
         }
 
         return objeto;
