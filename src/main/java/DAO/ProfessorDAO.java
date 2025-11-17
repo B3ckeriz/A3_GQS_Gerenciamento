@@ -37,24 +37,39 @@ public class ProfessorDAO {
     }
     
     // Estabelece a conexão com o banco de dados SQLite
-    public static Connection getConnection() {
+    public Connection getConexao() {
+
+        Connection connection = null;  // Instância da conexão
+
         try {
-            String url = System.getenv("DATABASE_URL");
-            if (url == null || url.isEmpty()) {
-                url = "jdbc:sqlite:database.db"; // default local
+            // Carregamento do JDBC Driver do SQLite
+            String driver = "org.sqlite.JDBC";
+            Class.forName(driver);
+
+            // Configurar a conexão - banco local em arquivo
+            String url = "jdbc:sqlite:database.db";
+            
+            connection = DriverManager.getConnection(url);
+
+            // Testando a conexão
+            if (connection != null) {
+                System.out.println("Status: Conectado ao SQLite!");
+            } else {
+                System.out.println("Status: Não conectado!");
             }
-            System.out.println("URL utilizada: " + url);
-            return DriverManager.getConnection(url);
+
+            return connection;
+            
+        } catch (ClassNotFoundException e) {  //Driver não encontrado
+            System.out.println("O driver não foi encontrado. " + e.getMessage());
+            return null;
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Não foi possível conectar: " + e.getMessage());
+            return null;
         }
     }
-
-    public Connection getConexao() {
-        return getConnection();
-    }
-
-
+    
     // Cria a tabela de professores se não existir
     private void criarTabelaSeNecessario() {
         String sqlProfessores = "CREATE TABLE IF NOT EXISTS tb_professores (" +

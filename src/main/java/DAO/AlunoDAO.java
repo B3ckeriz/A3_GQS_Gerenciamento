@@ -38,23 +38,39 @@ public class AlunoDAO {
     }
     
     // Estabelece a conexão com o banco de dados SQLite
-    public static Connection getConnection() {
+    public Connection getConexao() {
+
+        Connection connection = null;  // Instância da conexão
+
         try {
-            String url = System.getenv("DATABASE_URL");
-            if (url == null || url.isEmpty()) {
-                url = "jdbc:sqlite:database.db"; // default local
+            // Carregamento do JDBC Driver do SQLite
+            String driver = "org.sqlite.JDBC";
+            Class.forName(driver);
+
+            // Configurar a conexão - banco local em arquivo
+            String url = "jdbc:sqlite:database.db";
+            
+            connection = DriverManager.getConnection(url);
+
+            // Testando a conexão
+            if (connection != null) {
+                System.out.println("Status: Conectado ao SQLite!");
+            } else {
+                System.out.println("Status: Não conectado!");
             }
-            System.out.println("URL utilizada: " + url);
-            return DriverManager.getConnection(url);
+
+            return connection;
+
+        } catch (ClassNotFoundException e) {  // Driver não encontrado
+            System.out.println("O driver nao foi encontrado. " + e.getMessage() );
+            return null;
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Não foi possivel conectar: " + e.getMessage());
+            return null;
         }
     }
-
-    public Connection getConexao() {
-        return getConnection();
-    }
-
+    
     // Cria a tabela de alunos se não existir
     private void criarTabelaSeNecessario() {
         String sqlAlunos = "CREATE TABLE IF NOT EXISTS tb_alunos (" +
@@ -75,7 +91,7 @@ public class AlunoDAO {
 
     // Retorna a lista de alunos do banco de dados
     public ArrayList getMinhaLista() {
-
+        
         MinhaLista.clear(); // Limpa o ArrayList
 
         try {
@@ -131,11 +147,11 @@ public class AlunoDAO {
         try {
             Statement stmt = this.getConexao().createStatement();
             stmt.executeUpdate("DELETE FROM tb_alunos WHERE id = " + id);
-            stmt.close();
-
+            stmt.close();            
+            
         } catch (SQLException erro) {
         }
-
+        
         return true;
     }
 
@@ -162,13 +178,13 @@ public class AlunoDAO {
             throw new RuntimeException(erro);
         }
     }
-
+    
     // Carrega as informações de um aluno específico com base no ID
     public Aluno carregaAluno(int id) {
-
+        
         Aluno objeto = new Aluno();
         objeto.setId(id);
-
+        
         try {
             Statement stmt = this.getConexao().createStatement();
             ResultSet res = stmt.executeQuery("SELECT * FROM tb_alunos WHERE id = " + id);
