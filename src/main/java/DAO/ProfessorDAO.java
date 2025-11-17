@@ -12,7 +12,7 @@ import java.sql.Statement;
 public class ProfessorDAO {
     
     // Arraylist dinâmico para armazenar temporariamente os dados que serão retornados pela função getMinhaLista()
-    private static ArrayList<Professor> MinhaLista2 = new ArrayList<>();
+    private static ArrayList<Professor> minhaLista2 = new ArrayList<>();
 
     public ProfessorDAO() {
         criarTabelaSeNecessario();
@@ -82,7 +82,7 @@ public int maiorID() throws SQLException {
     // Retorna a lista de professores do banco de dados
     public ArrayList<Professor> getMinhaLista() {
         
-        MinhaLista2.clear(); // Limpa o arrayList
+        minhaLista2.clear(); // Limpa o arrayList
 
         try {
             Statement stmt = this.getConexao().createStatement();
@@ -100,7 +100,7 @@ public int maiorID() throws SQLException {
 
                 Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
 
-                MinhaLista2.add(objeto);
+                minhaLista2.add(objeto);
             }
 
             stmt.close();
@@ -108,7 +108,7 @@ public int maiorID() throws SQLException {
         } catch (SQLException ex) {
         }
 
-        return MinhaLista2;
+        return minhaLista2;
     }
     
     // Cadastra novo professor
