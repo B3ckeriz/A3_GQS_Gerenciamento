@@ -1,38 +1,66 @@
 package Model;
 
-import java.util.*;
 import DAO.AlunoDAO;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-// Classe Aluno herda as características de Pessoa
-public class Aluno extends Pessoa {
-
-    // Atributos
+public class Aluno {
+    private int id;
+    private String nome;
+    private int idade;
     private String curso;
     private int fase;
-    private final AlunoDAO dao; // Apontador para a Classe responsável pela interação com o banco de dados
+    
+    private AlunoDAO dao;
 
-    // Construtor padrão
+    // Construtores
     public Aluno() {
-        this.dao = new AlunoDAO(); // Instanciando objeto da Classe responsável pela interação com o banco de dados
+        this.dao = new AlunoDAO();
     }
 
-    // Construtor completo da classe Aluno
+    // Construtor simplificado com curso e fase
     public Aluno(String curso, int fase) {
         this.curso = curso;
         this.fase = fase;
-        this.dao = new AlunoDAO(); // Instanciando objeto da classe responsável pela interação com o banco de dados
+        this.dao = new AlunoDAO();
     }
 
-    // Construtor completo da classe Aluno + Superclasse Pessoa
+    // Construtor completo
     public Aluno(String curso, int fase, int id, String nome, int idade) {
-        super(id, nome, idade);
         this.curso = curso;
         this.fase = fase;
-        this.dao = new AlunoDAO(); // Instanciando objeto da Classe responsável pela interação com o banco de dados
+        this.id = id;
+        this.nome = nome;
+        this.idade = idade;
+        this.dao = new AlunoDAO();
     }
 
-    // Getters and setters
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
+    }
+
     public String getCurso() {
         return curso;
     }
@@ -48,58 +76,48 @@ public class Aluno extends Pessoa {
     public void setFase(int fase) {
         this.fase = fase;
     }
+
+    // Métodos de DAO - CORRIGIDOS com tipos genéricos adequados
     
-    // Sobrescrevendo método toString() para adequar o retorno de acordo com o objeto que aciona o mesmo
+
+// Métodos que retornam boolean (não void)
+public boolean insertAlunoBD() {
+    return dao.insertAlunoBD(this);
+}
+
+public boolean updateAlunoBD() {
+    return dao.updateAlunoBD(this);
+}
+
+public boolean deleteAlunoBD(int id) {
+    return dao.deleteAlunoBD(id);
+}
+
+// Retornar List ao invés de ArrayList
+public List<Aluno> getMinhaLista() {
+    return dao.getMinhaLista();
+}
+
+    public Optional<Aluno> carregaAluno(int id) {
+        return dao.carregaAluno(id);
+    }
+
+    public int maiorID() {
+        return dao.maiorID();
+    }
+    
+    public List<Aluno> buscarPorNome(String nome) {
+        return dao.buscarPorNome(nome);
+    }
+
     @Override
     public String toString() {
-        return "\n ID: " + this.getId()
-                + "\n Nome: " + this.getNome()
-                + "\n Idade: " + this.getIdade()
-                + "\n Curso: " + this.getCurso()
-                + "\n Fase:" + this.getFase()
-                + "\n -----------";
+        return "Aluno{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", idade=" + idade +
+                ", curso='" + curso + '\'' +
+                ", fase=" + fase +
+                '}';
     }
-    
-    /*
-        • Métodos responsáveis pelas ações referentes ao banco de dados.
-        • Atuam em conjunto com a Classe DAO através da variável dao que recebe um objeto da referida classe.
-    */
-    
-    // Retorna a lista de alunos do banco de dados
-    public ArrayList getMinhaLista() {
-        return dao.getMinhaLista();
-    }
-
-    // Cadastra novo aluno
-    public boolean InsertAlunoBD(String curso, int fase, String nome, int idade) throws SQLException {
-        int id = this.maiorID() + 1;
-        Aluno objeto = new Aluno(curso, fase, id, nome, idade);
-        dao.InsertAlunoBD(objeto);
-        return true;
-
-    }
-
-    // Deleta um aluno específico pelo seu campo ID
-    public boolean DeleteAlunoBD(int id) {
-        dao.DeleteAlunoBD(id);
-        return true;
-    }
-
-    // Edita um aluno específico pelo seu campo ID
-    public boolean UpdateAlunoBD(String curso, int fase, int id, String nome, int idade) {
-        Aluno objeto = new Aluno(curso, fase, id, nome, idade);
-        dao.UpdateAlunoBD(objeto);
-        return true;
-    }
-
-    // Carrega as informações de um aluno específico com base no ID
-    public Aluno carregaAluno(int id) {
-        dao.carregaAluno(id);
-        return null;
-    }
-    
-    // Retorna o maior ID do banco de dados
-    public int maiorID() throws SQLException{
-        return dao.maiorID();
-    }   
 }
