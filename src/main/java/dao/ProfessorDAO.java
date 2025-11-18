@@ -81,14 +81,13 @@ public int maiorID() throws SQLException {
     
     // Retorna a lista de professores do banco de dados
     public ArrayList<Professor> getMinhaLista() {
-        
         minhaLista2.clear(); // Limpa o arrayList
+        String sql = "SELECT * FROM tb_professores";
 
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM tb_professores");
+        try (Statement stmt = this.getConexao().createStatement();
+            ResultSet res = stmt.executeQuery(sql)){
+
             while (res.next()) {
-
                 String campus = res.getString("campus");
                 String cpf = res.getString("cpf");
                 String contato = res.getString("contato");
@@ -98,14 +97,15 @@ public int maiorID() throws SQLException {
                 String nome = res.getString("nome");
                 int idade = res.getInt("idade");
 
+                if (campus == null) campus = "Não informado";
                 Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
 
                 minhaLista2.add(objeto);
             }
 
-            stmt.close();
-
         } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Erro ao carregar lista de professores", ex);
         }
 
         return minhaLista2;
