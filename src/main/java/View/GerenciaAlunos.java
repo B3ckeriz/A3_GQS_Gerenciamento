@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -359,7 +360,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             if (respostaUsuario == 0) {// clicou em SIM
 
                 // Envia os dados para o Professor processar
-                if (this.objetoAluno.DeleteAlunoBD(id)) {
+                if (this.objetoAluno.deleteAlunoBD(id)) {
                     JOptionPane.showMessageDialog(rootPane, "Cadastro apagado com sucesso!");
                 }
             }
@@ -407,23 +408,22 @@ public class GerenciaAlunos extends javax.swing.JFrame {
     
     @SuppressWarnings("unchecked")
     // Realiza a varredura no banco de dados e imprime as informações na tabela da tela de gerência
-    public void carregaTabela() {
-        DefaultTableModel modelo = (DefaultTableModel) this.jTableAlunos.getModel();
-        modelo.setNumRows(0);
+   public void carregaTabela() {
+    DefaultTableModel modelo = (DefaultTableModel) this.jTableAlunos.getModel();
+    modelo.setNumRows(0);
 
-        ArrayList<Aluno> minhalista = new ArrayList<>();
-        minhalista = objetoAluno.getMinhaLista();
+    List<Aluno> minhalista = objetoAluno.getMinhaLista(); // Mudança aqui
 
-        for (Aluno a : minhalista) {
-            modelo.addRow(new Object[]{
-                a.getId(),
-                a.getNome(),
-                a.getIdade(),
-                a.getCurso(),
-                a.getFase() + "ª",
-            });
-        }
+    for (Aluno a : minhalista) {
+        modelo.addRow(new Object[]{
+            a.getId(),
+            a.getNome(),
+            a.getIdade(),
+            a.getCurso(),
+            a.getFase() + "ª",
+        });
     }
+}
     
     
     /**
