@@ -1,6 +1,6 @@
 package model;
 
-import DAO.ProfessorDAO;
+import dao.ProfessorDAO;
 import java.sql.SQLException;
 import java.util.*;
 
