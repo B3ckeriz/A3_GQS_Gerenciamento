@@ -7,10 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  
-  build:
-    runs-on: ubuntu-latest
- 
+  # Jobs para build em desenvolvimento 
   build-dev:
     runs-on: ubuntu-latest
     environment:

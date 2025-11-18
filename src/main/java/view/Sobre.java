@@ -58,13 +58,17 @@ public class Sobre extends javax.swing.JFrame {
         setResizable(false);
         setType(java.awt.Window.Type.POPUP);
 
-        jLabel1.setText("• Júlia Schaden Exterkoetter");
+        jLabel1.setText("• Lucas Felipe Rogério");
 
-        jLabel3.setText("• Kaio Wellington Farias da Costa ");
+        jLabel3.setText("• Rade Gabriel Farah ");
 
-        jLabel4.setText("• Pedro Furlan Becker");
+        jLabel4.setText("• Camille Zimmermann");
 
-        jLabel5.setText("• Rafaela Araujo Fontoura da Rosa");
+        jLabel5.setText("• Pablo Nevado");
+
+        jLabel6.setText("• Laura Maria Firta Foes");
+
+        jLabel7.setText("• Julia Schaden Exterkoetter");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

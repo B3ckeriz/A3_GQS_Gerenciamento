@@ -1,20 +1,15 @@
 package view;
 
-import DAO.UsuarioDAO;
+import DAO.AlunoDAO;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import java.sql.SQLException;
-
-
 
 // Classe TelaLogin herda as características de javax.swing.JFrame
 public class TelaLogin extends javax.swing.JFrame {
     public static String passwordDB = ""; // Armazena senha em tempo de execução
     public static String userDB = ""; // Armazena user em tempo de execução
-
-    private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
-
+    
     // Construtor
     public TelaLogin() {
         initComponents();
@@ -117,21 +112,15 @@ public class TelaLogin extends javax.swing.JFrame {
     
     // Verifica se o usuário/senha fornecidos conferem
     private boolean checarConexao() throws Mensagens {
-        UsuarioDAO teste = new UsuarioDAO();
-        try {
-            if (teste.getConexao() != null){
-                JOptionPane.showMessageDialog(rootPane, "Conexão efetuada com sucesso!");
-                return true;
-            } else {
-                JOptionPane.showMessageDialog(rootPane, "Conexão falhou!");
-                return false;
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao conectar com o banco de dados.", e);
-            JOptionPane.showMessageDialog(rootPane, "Erro ao conectar com o banco de dados! Verifique os logs.");
+        AlunoDAO teste = new AlunoDAO();
+        
+        if (teste.getConexao() != null){
+            JOptionPane.showMessageDialog(rootPane, "Conexão efetuada com sucesso!");
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(rootPane, "Conexão falhou!");
             return false;
         }
-
     }
     
     // Action: efetuar login
