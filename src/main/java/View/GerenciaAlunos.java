@@ -308,12 +308,21 @@ public class GerenciaAlunos extends javax.swing.JFrame {
     
     // Button: editar aluno cadastrado
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
-        if (this.jTableAlunos.getSelectedRow() != -1){
-            EditarAluno tela = new EditarAluno();
-            tela.setVisible(true);
-        } else {
+        int linha = jTableAlunos.getSelectedRow();
+
+        if (linha == -1) {
             JOptionPane.showMessageDialog(null, "Selecione um cadastro para alterar");
+            return;
         }
+
+        String id = jTableAlunos.getValueAt(linha, 0).toString();
+        String nome = jTableAlunos.getValueAt(linha, 1).toString();
+        String idade = jTableAlunos.getValueAt(linha, 2).toString();
+        String curso = jTableAlunos.getValueAt(linha, 3).toString();
+        String fase = jTableAlunos.getValueAt(linha, 4).toString().substring(0, 1);
+
+        EditarAluno tela = new EditarAluno(id, nome, idade, curso, fase);
+        tela.setVisible(true);
         
     }//GEN-LAST:event_bEditarActionPerformed
     

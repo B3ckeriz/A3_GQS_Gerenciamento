@@ -7,13 +7,31 @@ import javax.swing.JOptionPane;
 public class EditarAluno extends javax.swing.JFrame {
     
     private Aluno objetoAluno; // Apontador para a Classe Aluno
-    
+    private int idAluno; // Armazena o ID do aluno que será editado
+
     // Construtor
     public EditarAluno() {
         initComponents();
         preencheCampos();
         getRootPane().setDefaultButton(this.bConfirmar);
         this.objetoAluno = new Aluno(); 
+    }
+
+    public EditarAluno(String id, String nome, String idade, String curso, String fase) {
+        initComponents();
+
+        // Guarda o ID do aluno para o update
+        this.idAluno = Integer.parseInt(id);
+
+        // Preenche os campos corretos do formulário
+        this.nome.setText(nome);
+        this.idade.setText(idade);
+
+        // Seleciona o curso correspondente
+        this.curso.setSelectedItem(curso);
+
+        // Seleciona a fase (ex.: 3 -> "3ª")
+        this.fase.setSelectedItem(fase + "ª");
     }
 
     /**
@@ -175,7 +193,7 @@ public class EditarAluno extends javax.swing.JFrame {
             int idade = 0;
             String curso = "";
             int fase = 0;
-            int id = Integer.parseInt(GerenciaAlunos.listaDados2[0]);
+            int id = this.idAluno;
             String[] arrayCursos = {"-", 
                 "Administração", 
                 "Análise e Desenvolvimento de Sistemas", 
