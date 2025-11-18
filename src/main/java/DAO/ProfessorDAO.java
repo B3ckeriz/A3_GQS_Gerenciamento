@@ -1,6 +1,6 @@
 package DAO;
 
-import Model.Professor;
+import model.Professor;
 import java.util.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,29 +12,32 @@ import java.sql.Statement;
 public class ProfessorDAO {
     
     // Arraylist dinâmico para armazenar temporariamente os dados que serão retornados pela função getMinhaLista()
-    public static ArrayList<Professor> MinhaLista2 = new ArrayList<Professor>();
+    private static ArrayList<Professor> minhaLista2 = new ArrayList<>();
 
     public ProfessorDAO() {
         criarTabelaSeNecessario();
     }
     
     // Retorna o maior ID do banco de dados
-    public int maiorID() throws SQLException {
-        int maiorID = 0;
+public int maiorID() throws SQLException {
+    int maiorID = 0;
+    
+    String sql = "SELECT MAX(id) id FROM tb_professores";
+    
+    try (Connection conn = getConexao();
+         Statement stmt = conn.createStatement();
+         ResultSet res = stmt.executeQuery(sql)) {
         
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT MAX(id) id FROM tb_professores");
-            res.next();
+        if (res.next()) {
             maiorID = res.getInt("id");
-
-            stmt.close();
-
-        } catch (SQLException ex) {
         }
-
-        return maiorID;
+        
+    } catch (SQLException ex) {
+        throw new RuntimeException("Erro ao buscar maior ID", ex);
     }
+    
+    return maiorID;
+}
     
     // Estabelece a conexão com o banco de dados SQLite
     public static Connection getConnection() {
@@ -77,9 +80,9 @@ public class ProfessorDAO {
     }
     
     // Retorna a lista de professores do banco de dados
-    public ArrayList getMinhaLista() {
+    public ArrayList<Professor> getMinhaLista() {
         
-        MinhaLista2.clear(); // Limpa o arrayList
+        minhaLista2.clear(); // Limpa o arrayList
 
         try {
             Statement stmt = this.getConexao().createStatement();
@@ -97,7 +100,7 @@ public class ProfessorDAO {
 
                 Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
 
-                MinhaLista2.add(objeto);
+                minhaLista2.add(objeto);
             }
 
             stmt.close();
@@ -105,7 +108,7 @@ public class ProfessorDAO {
         } catch (SQLException ex) {
         }
 
-        return MinhaLista2;
+        return minhaLista2;
     }
     
     // Cadastra novo professor
@@ -137,16 +140,19 @@ public class ProfessorDAO {
     
     // Deleta um professor específico pelo seu campo ID
     public boolean DeleteProfessorBD(int id) {
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            stmt.executeUpdate("DELETE FROM tb_professores WHERE id = " + id);
-            stmt.close();            
-            
-        } catch (SQLException erro) {
-        }
+    String sql = "DELETE FROM tb_professores WHERE id = ?";
+    
+    try (Connection conn = getConexao();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
         
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
         return true;
+        
+    } catch (SQLException erro) {
+        throw new RuntimeException("Erro ao deletar professor", erro);
     }
+}
     
     // Edita um aluno específico pelo seu campo ID
     public boolean UpdateProfessorBD(Professor objeto) {

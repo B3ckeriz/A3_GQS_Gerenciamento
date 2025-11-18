@@ -1,11 +1,11 @@
-package View;
+package view;
 
 import com.formdev.flatlaf.json.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.text.MaskFormatter;
-import Model.Professor;
+import model.Professor;
 import java.util.ArrayList;
 
 // Classe EditarProfessor herda as características de javax.swing.JFrame

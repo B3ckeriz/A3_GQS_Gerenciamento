@@ -1,23 +1,19 @@
-package View;
+package view;
 
 import DAO.AlunoDAO;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-/**
- * Tela de Login do sistema SisUni
- * Valida credenciais e estabelece conexão com o banco de dados
- */
+// Classe TelaLogin herda as características de javax.swing.JFrame
 public class TelaLogin extends javax.swing.JFrame {
-    
-    private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
+    public static String passwordDB = ""; // Armazena senha em tempo de execução
+    public static String userDB = ""; // Armazena user em tempo de execução
     
     // Construtor
     public TelaLogin() {
         initComponents();
         getRootPane().setDefaultButton(this.login);
-        setLocationRelativeTo(null); // Centraliza a janela
     }
 
     @SuppressWarnings("unchecked")
@@ -33,14 +29,14 @@ public class TelaLogin extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Login - SisUni");
+        setTitle("Login");
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(51, 255, 51));
         setResizable(false);
 
         login.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         login.setText("LOGIN");
-        login.setToolTipText("Pressione ENTER para fazer login");
+        login.setToolTipText("ENTER");
         login.setAlignmentX(0.5F);
         login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -57,14 +53,14 @@ public class TelaLogin extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("DIGITE A SENHA");
+        jLabel2.setText("DIGITE A SENHA (MySQL)");
 
         user.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         user.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("DIGITE O USUÁRIO");
+        jLabel3.setText("DIGITE O USUÁRIO (MySQL)");
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -108,124 +104,47 @@ public class TelaLogin extends javax.swing.JFrame {
                 .addGap(29, 29, 29))
         );
 
-        login.getAccessibleContext().setAccessibleDescription("Botão de Login");
+        login.getAccessibleContext().setAccessibleDescription("Cadastro de Professores");
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     
-    /**
-     * Valida as credenciais fornecidas pelo usuário
-     * @return true se usuário e senha foram informados, false caso contrário
-     */
-    private boolean validarCredenciais() {
-        String usuario = user.getText().trim();
-        String senha = String.valueOf(password.getPassword());
+    // Verifica se o usuário/senha fornecidos conferem
+    private boolean checarConexao() throws Mensagens {
+        AlunoDAO teste = new AlunoDAO();
         
-        if (usuario.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                this, 
-                "Por favor, informe o usuário!", 
-                "Campo obrigatório", 
-                JOptionPane.WARNING_MESSAGE
-            );
-            user.requestFocus();
+        if (teste.getConexao() != null){
+            JOptionPane.showMessageDialog(rootPane, "Conexão efetuada com sucesso!");
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(rootPane, "Conexão falhou!");
             return false;
         }
-        
-        if (senha.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                this, 
-                "Por favor, informe a senha!", 
-                "Campo obrigatório", 
-                JOptionPane.WARNING_MESSAGE
-            );
-            password.requestFocus();
-            return false;
-        }
-        
-        return true;
     }
     
-    /**
-     * Testa a conexão com o banco de dados
-     * @return true se a conexão for bem-sucedida, false caso contrário
-     */
-    private boolean testarConexao() {
-        
-AlunoDAO teste = new AlunoDAO();
-if (teste.testarConexao()) {
-    JOptionPane.showMessageDialog(rootPane, "Conexão efetuada com sucesso!");
-    return true;
-} else {
-    JOptionPane.showMessageDialog(rootPane, "Conexão falhou!");
-    return false;
-}
-        
-        
-    }
-    
-    /**
-     * Action do botão LOGIN
-     * Valida credenciais e abre a tela principal se tudo estiver correto
-     */
+    // Action: efetuar login
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        
-        // Valida se os campos foram preenchidos
-        if (!validarCredenciais()) {
-            return;
-        }
-        
-        // Desabilita o botão durante o processo
-        login.setEnabled(false);
-        login.setText("Conectando...");
+        String str = String.copyValueOf(this.password.getPassword());
+        this.passwordDB = str;
+        this.userDB = this.user.getText();
         
         try {
-            // Testa a conexão com o banco
-            if (testarConexao()) {
-                logger.info("Login realizado com sucesso pelo usuário: " + user.getText());
-                
-                // Abre a tela principal
-                TelaPrincipal telaPrincipal = new TelaPrincipal();
-                telaPrincipal.setVisible(true);
-                
-                // Fecha a tela de login
+            if (checarConexao()){
+                TelaPrincipal tela = new TelaPrincipal();
+                tela.setVisible(true);
                 this.dispose();
             }
-            
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Erro durante o processo de login", ex);
-            JOptionPane.showMessageDialog(
-                this, 
-                "Erro ao realizar login:\n" + ex.getMessage(), 
-                "Erro", 
-                JOptionPane.ERROR_MESSAGE
-            );
-        } finally {
-            // Reabilita o botão
-            login.setEnabled(true);
-            login.setText("LOGIN");
+        } catch (Mensagens ex) {
+            Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }//GEN-LAST:event_loginActionPerformed
 
     /**
-     * Método main - ponto de entrada da aplicação
+     * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the System look and feel */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            logger.log(Level.WARNING, "Não foi possível definir Look and Feel Nimbus", ex);
-        }
-
-        /* Cria e exibe a tela de login */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TelaLogin().setVisible(true);

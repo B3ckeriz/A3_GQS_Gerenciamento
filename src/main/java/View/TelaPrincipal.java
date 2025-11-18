@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
