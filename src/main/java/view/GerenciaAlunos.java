@@ -250,7 +250,14 @@ public class GerenciaAlunos extends javax.swing.JFrame {
                         throw new IOException("Não foi possível deletar o arquivo: " + fileXLS.getAbsolutePath());
                     }
                 }
+
                 fileXLS.createNewFile();
+
+                if (!fileXLS.createNewFile()) {
+                    // Caso o arquivo já exista ou não possa ser criado
+                    System.out.println("O arquivo já existe ou não foi possível criá-lo: " + fileXLS.getAbsolutePath());
+                    throw new IOException("Não foi possível criar o novo arquivo: " + fileXLS.getAbsolutePath());
+                }
 
                 try(Workbook book = new HSSFWorkbook();
                     FileOutputStream fileOut = new FileOutputStream(fileXLS)){
