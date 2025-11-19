@@ -23,7 +23,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
     public GerenciaAlunos() {
         initComponents();
-        carregaTabela(); // seguro pois carregaTabela é final e private
+        carregaTabela();
     }
 
     @SuppressWarnings("unchecked")
@@ -73,16 +73,17 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             boolean[] canEdit = new boolean[]{
                 false, false, false, false, true
             };
-
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
         });
+
         jTableAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableAlunosMouseClicked(evt);
             }
         });
+
         jScrollPane2.setViewportView(jTableAlunos);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 40));
@@ -173,43 +174,67 @@ public class GerenciaAlunos extends javax.swing.JFrame {
         chooser.setAcceptAllFileFilterUsed(false);
 
         if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+
             String path = chooser.getSelectedFile().toString().concat(".xls");
-            File fileXLS = new File(path);
 
-            if (fileXLS.exists()) fileXLS.delete();
-            fileXLS.createNewFile();
+            try {
+                File fileXLS = new File(path);
 
-            Workbook book = new HSSFWorkbook();
-            FileOutputStream file = new FileOutputStream(fileXLS);
-            Sheet sheet = book.createSheet("Minha folha de trabalho 1");
-            sheet.setDisplayGridlines(true);
-
-            for (int i = 0; i < this.jTableAlunos.getRowCount(); i++) {
-                Row row = sheet.createRow(i);
-                for (int j = 0; j < this.jTableAlunos.getColumnCount(); j++) {
-                    Cell cell = row.createCell(j);
-                    if (i == 0) cell.setCellValue(this.jTableAlunos.getColumnName(j));
-                }
-            }
-
-            int firstRow = 1;
-
-            for (int linha = 0; linha < this.jTableAlunos.getRowCount(); linha++) {
-                Row row2 = sheet.createRow(firstRow++);
-                for (int coluna = 0; coluna < this.jTableAlunos.getColumnCount(); coluna++) {
-                    Cell cell2 = row2.createCell(coluna);
-                    Object value = this.jTableAlunos.getValueAt(linha, coluna);
-
-                    if (value instanceof Number) {
-                        cell2.setCellValue(Double.parseDouble(value.toString()));
-                    } else {
-                        cell2.setCellValue(String.valueOf(value));
+                if (fileXLS.exists()) {
+                    boolean deleted = fileXLS.delete();
+                    if (!deleted) {
+                        throw new IOException("Não foi possível substituir o arquivo existente.");
                     }
                 }
-            }
 
-            book.write(file);
-            file.close();
+                if (!fileXLS.createNewFile()) {
+                    throw new IOException("Não foi possível criar o arquivo.");
+                }
+
+                try (Workbook book = new HSSFWorkbook();
+                     FileOutputStream fileOut = new FileOutputStream(fileXLS)) {
+
+                    Sheet sheet = book.createSheet("Minha folha de trabalho 1");
+                    sheet.setDisplayGridlines(true);
+
+                    for (int i = 0; i < this.jTableAlunos.getRowCount(); i++) {
+                        Row row = sheet.createRow(i);
+                        for (int j = 0; j < this.jTableAlunos.getColumnCount(); j++) {
+                            Cell cell = row.createCell(j);
+                            if (i == 0) {
+                                cell.setCellValue(this.jTableAlunos.getColumnName(j));
+                            }
+                        }
+                    }
+
+                    int firstRow = 1;
+
+                    for (int linha = 0; linha < this.jTableAlunos.getRowCount(); linha++) {
+                        Row row2 = sheet.createRow(firstRow++);
+                        for (int coluna = 0; coluna < this.jTableAlunos.getColumnCount(); coluna++) {
+
+                            Cell cell2 = row2.createCell(coluna);
+                            Object value = this.jTableAlunos.getValueAt(linha, coluna);
+
+                            if (value instanceof Double) {
+                                cell2.setCellValue((Double) value);
+                            } else if (value instanceof Float) {
+                                cell2.setCellValue((Float) value);
+                            } else if (value instanceof Integer) {
+                                cell2.setCellValue((Integer) value);
+                            } else {
+                                cell2.setCellValue(value != null ? value.toString() : "");
+                            }
+                        }
+                    }
+
+                    book.write(fileOut);
+                }
+
+            } catch (IOException | NumberFormatException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Erro ao exportar para Excel: " + e.getMessage());
+            }
         }
     }
 
@@ -272,14 +297,22 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             if (this.jTableAlunos.getSelectedRow() == -1) {
                 throw new Mensagens("Selecione um cadastro para deletar");
             } else {
-                id = Integer.parseInt(this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 0).toString());
+                id = Integer.parseInt(
+                        this.jTableAlunos.getValueAt(
+                                this.jTableAlunos.getSelectedRow(), 0
+                        ).toString()
+                );
             }
 
             String[] options = {"Sim", "Não"};
-            int respostaUsuario = JOptionPane.showOptionDialog(null,
+            int respostaUsuario = JOptionPane.showOptionDialog(
+                    null,
                     "Tem certeza que deseja apagar este cadastro?",
                     "Confirmar exclusão",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null, options, options[1]
+            );
 
             if (respostaUsuario == 0) {
                 if (this.objetoAluno.deleteAlunoBD(id)) {
@@ -352,9 +385,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             Logger.getLogger(GerenciaAlunos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> {
-            new GerenciaAlunos().setVisible(true);
-        });
+        java.awt.EventQueue.invokeLater(() -> new GerenciaAlunos().setVisible(true));
     }
 
     private javax.swing.JButton bCadastro;
