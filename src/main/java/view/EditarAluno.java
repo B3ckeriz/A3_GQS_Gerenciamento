@@ -1,54 +1,60 @@
 package view;
 
 import model.Aluno;
-import javax.swing.JOptionPane;
-import java.util.logging.Logger;
+import javax.swing.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EditarAluno extends javax.swing.JFrame {
-    
-    // Constantes para evitar duplicação
+
+    // --- Constantes reutilizáveis ---
     private static final String[] ARRAY_CURSOS = {
         "-", 
         "Administração", 
-        "Análise e Desenvolvimento de Sistemas", 
-        "Arquitetura e Urbanismo", 
-        "Ciências Contábeis", 
-        "Ciências da Computação", 
-        "Design", 
-        "Design de Moda", 
-        "Relações Internacionais", 
+        "Análise e Desenvolvimento de Sistemas",
+        "Arquitetura e Urbanismo",
+        "Ciências Contábeis",
+        "Ciências da Computação",
+        "Design",
+        "Design de Moda",
+        "Relações Internacionais",
         "Sistemas de Informação"
     };
-    
-    private static final int[] ARRAY_FASES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    
+
+    private static final int[] ARRAY_FASES = {1,2,3,4,5,6,7,8,9,10};
+    private static final String[] ARRAY_FASES_STRING = {
+        "1ª","2ª","3ª","4ª","5ª","6ª","7ª","8ª","9ª","10ª"
+    };
+
     private static final String ERRO_NOME = "Nome deve conter ao menos 2 caracteres.";
     private static final String ERRO_IDADE = "Idade inválida";
     private static final String ERRO_CURSO = "Escolha um curso";
-    
+
     private Aluno objetoAluno;
     private int idAluno;
 
     public EditarAluno() {
         initComponents();
+        objetoAluno = new Aluno();
         preencheCampos();
-        getRootPane().setDefaultButton(this.bConfirmar);
-        this.objetoAluno = new Aluno(); 
+        getRootPane().setDefaultButton(bConfirmar);
     }
 
     public EditarAluno(String id, String nome, String idade, String curso, String fase) {
         initComponents();
-        this.idAluno = Integer.parseInt(id);
+        objetoAluno = new Aluno();
+        
+        idAluno = Integer.parseInt(id);
         this.nome.setText(nome);
         this.idade.setText(idade);
+
         this.curso.setSelectedItem(curso);
         this.fase.setSelectedItem(fase + "ª");
-        this.objetoAluno = new Aluno();
     }
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
+
         jLabel1 = new javax.swing.JLabel();
         nome = new javax.swing.JTextField();
         curso = new javax.swing.JComboBox<>();
@@ -61,43 +67,41 @@ public class EditarAluno extends javax.swing.JFrame {
         bConfirmar = new javax.swing.JButton();
         idade = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Editar Aluno");
         setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); 
+        jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setText("Editar Aluno");
 
-        curso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-", "Administração", "Análise e Desenvolvimento de Sistemas", "Arquitetura e Urbanismo", "Ciências Contábeis", "Ciências da Computação", "Design", "Design de Moda", "Relações Internacionais", "Sistemas de Informação" }));
-        curso.setName("");
+        curso.setModel(new DefaultComboBoxModel<>(ARRAY_CURSOS));
+        fase.setModel(new DefaultComboBoxModel<>(ARRAY_FASES_STRING));
 
-        fase.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1ª", "2ª", "3ª", "4ª", "5ª", "6ª", "7ª", "8ª", "9ª", "10ª" }));
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
         jLabel2.setText("Nome:");
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setHorizontalAlignment(SwingConstants.RIGHT);
         jLabel3.setText("Curso:");
 
         jLabel4.setText("Idade:");
-
         jLabel5.setText("Fase:");
 
         bCancelar.setText("Cancelar");
-        bCancelar.addActionListener(evt -> bCancelarActionPerformed(evt));
+        bCancelar.addActionListener(e -> dispose());
 
         bConfirmar.setText("Confirmar");
         bConfirmar.setToolTipText("ENTER");
-        bConfirmar.addActionListener(evt -> bConfirmarActionPerformed(evt));
+        bConfirmar.addActionListener(this::bConfirmarActionPerformed);
 
+        // --- Layout gerado (mantido para evitar problemas no NetBeans) ---
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(33, 33, 33)
@@ -106,7 +110,7 @@ public class EditarAluno extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nome)
                     .addComponent(curso, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -115,11 +119,11 @@ public class EditarAluno extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(fase, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(bConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(66, 66, 66)
                         .addComponent(bCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addGap(37, 37, 37))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,7 +144,7 @@ public class EditarAluno extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
                     .addComponent(idade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -150,103 +154,75 @@ public class EditarAluno extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }
-    
-    private int encontrarIndice(String[] array, String valor) {
-        for (int i = 0; i < array.length; i++) {
-            if (valor.equalsIgnoreCase(array[i])) {
-                return i;
-            }
-        }
-        return 0;
-    }
-    
-    private int encontrarIndiceFase(int fase) {
-        for (int i = 0; i < ARRAY_FASES.length; i++) {
-            if (fase == ARRAY_FASES[i]) {
-                return i;
-            }
-        }
-        return 0;
-    }
-    
+
+    // --- Métodos auxiliares ---
+
     private void preencheCampos() {
-        int indexCursos = encontrarIndice(ARRAY_CURSOS, GerenciaAlunos.listaDados2[3]);
-        int indexFases = encontrarIndiceFase(Integer.parseInt(GerenciaAlunos.listaDados2[4]));
-        
         this.nome.setText(GerenciaAlunos.listaDados2[1]);
         this.idade.setText(GerenciaAlunos.listaDados2[2]);
-        this.curso.setSelectedIndex(indexCursos);
-        this.fase.setSelectedIndex(indexFases);
+
+        curso.setSelectedItem(GerenciaAlunos.listaDados2[3]);
+
+        int faseValor = Integer.parseInt(GerenciaAlunos.listaDados2[4]);
+        fase.setSelectedItem(faseValor + "ª");
     }
-    
+
     private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {
         try {
             String nome = validarNome();
             int idade = validarIdade();
             String curso = validarCurso();
-            int fase = ARRAY_FASES[this.fase.getSelectedIndex()];
-            
-            boolean sucesso = objetoAluno.updateAlunoBD(curso, fase, idAluno, nome, idade);
-            
+            int faseSelecionada = ARRAY_FASES[fase.getSelectedIndex()];
+
+            boolean sucesso = objetoAluno.updateAlunoBD(curso, faseSelecionada, idAluno, nome, idade);
+
             if (sucesso) {
                 JOptionPane.showMessageDialog(rootPane, "Aluno alterado com sucesso!");
                 this.dispose();
             }
-        
-        } catch (Mensagens erro) {
-            JOptionPane.showMessageDialog(null, erro.getMessage());
-        } catch (NumberFormatException erro2) {
-            JOptionPane.showMessageDialog(null, "Informe um número.");
+
+        } catch (Mensagens e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Informe um número válido.");
         }
-    }
-    
-    // Métodos de validação
-    
-    private String validarNome() throws Mensagens {
-        String nomeTexto = this.nome.getText();
-        if (nomeTexto.length() < 2) {
-            throw new Mensagens(ERRO_NOME);
-        }
-        return nomeTexto;
-    }
-    
-    private int validarIdade() throws Mensagens {
-        int idadeValor = Integer.parseInt(this.idade.getText());
-        if (idadeValor < 11) {
-            throw new Mensagens(ERRO_IDADE);
-        }
-        return idadeValor;
-    }
-    
-    private String validarCurso() throws Mensagens {
-        int indice = this.curso.getSelectedIndex();
-        if (indice == 0) {
-            throw new Mensagens(ERRO_CURSO);
-        }
-        return ARRAY_CURSOS[indice];
-    }
-    
-    private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {
-        this.dispose();
     }
 
+    // --- Validações organizadas ---
+    private String validarNome() throws Mensagens {
+        String txt = nome.getText();
+        if (txt.length() < 2) throw new Mensagens(ERRO_NOME);
+        return txt;
+    }
+
+    private int validarIdade() throws Mensagens {
+        int valor = Integer.parseInt(idade.getText());
+        if (valor < 11) throw new Mensagens(ERRO_IDADE);
+        return valor;
+    }
+
+    private String validarCurso() throws Mensagens {
+        if (curso.getSelectedIndex() == 0) throw new Mensagens(ERRO_CURSO);
+        return ARRAY_CURSOS[curso.getSelectedIndex()];
+    }
+
+    // --- Main ---
     public static void main(String args[]) {
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | 
-                 IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(EditarAluno.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> new EditarAluno().setVisible(true));
     }
 
-    // Variables declaration - do not modify
+    // Variables declaration 
     private javax.swing.JButton bCancelar;
     private javax.swing.JButton bConfirmar;
     private javax.swing.JComboBox<String> curso;
