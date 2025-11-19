@@ -1,11 +1,11 @@
-package View;
+package view;
 
-import Model.Professor;
+import model.Professor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -117,7 +117,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Cadastro de Professores");
 
-        refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/refresh.png"))); // NOI18N
+        refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/refresh.png"))); // NOI18N
         refresh.setText("  Atualizar tabela");
         refresh.setToolTipText("CTRL+R");
         refresh.addActionListener(new java.awt.event.ActionListener() {
@@ -437,8 +437,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) this.jTableProfessores.getModel();
         modelo.setNumRows(0);
 
-        ArrayList<Professor> minhalista = new ArrayList<>();
-        minhalista = objetoProfessor.getMinhaLista();
+        List<Professor> minhalista = objetoProfessor.getMinhaLista();
 
         for (Professor a : minhalista) {
             modelo.addRow(new Object[]{
@@ -453,6 +452,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
             });
         }
     }
+
     
     
     /**
