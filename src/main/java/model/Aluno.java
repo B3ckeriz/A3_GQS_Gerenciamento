@@ -70,7 +70,7 @@ public class Aluno extends Pessoa {
     return dao.getMinhaLista(); // Chama o DAO
 }
     // Cadastra novo aluno
-    public boolean insertAlunoBD(String curso, int fase, String nome, int idade) throws SQLException {
+    public boolean insertAluno(String curso, int fase, String nome, int idade) throws SQLException {
         int id = this.maiorID() + 1;
         Aluno objeto = new Aluno(curso, fase, id, nome, idade);
         dao.insertAluno(objeto);
@@ -79,7 +79,7 @@ public class Aluno extends Pessoa {
     }
 
     // Deleta um aluno específico pelo seu campo ID
-    public boolean deleteAlunoBD(int id) {
+    public boolean deleteAluno(int id) {
         dao.deleteAluno(id);
         return true;
     }
@@ -93,9 +93,9 @@ public class Aluno extends Pessoa {
 
     // Carrega as informações de um aluno específico com base no ID
     public Aluno carregaAluno(int id) {
-        dao.carregaAluno(id);
-        return null;
+       return dao.carregaAluno(id);
     }
+
     
     // Retorna o maior ID do banco de dados
     public int maiorID() throws SQLException{

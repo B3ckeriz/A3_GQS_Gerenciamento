@@ -315,7 +315,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             );
 
             if (respostaUsuario == 0) {
-                if (this.objetoAluno.deleteAlunoBD(id)) {
+                if (this.objetoAluno.deleteAluno(id)) {
                     JOptionPane.showMessageDialog(rootPane, "Cadastro apagado com sucesso!");
                 }
             }
