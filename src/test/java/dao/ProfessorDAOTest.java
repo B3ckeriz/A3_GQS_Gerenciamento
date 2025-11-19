@@ -2,65 +2,74 @@ package dao;
 
 import model.Professor;
 import org.junit.jupiter.api.*;
-//import java.sql.*;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProfessorDAOTest {
 
-    static ProfessorDAO dao;
-/*
-    @BeforeAll
-    static void setupDatabase() throws Exception {
-        dao = new ProfessorDAO();
-        dao.setTestDatabase("jdbc:sqlite::memory:");
+    private static ProfessorDAO dao;
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite::memory:")) {
-            conn.createStatement().execute(
-                "CREATE TABLE tb_professores (" +
-                "id INTEGER PRIMARY KEY, " +
-                "nome TEXT, idade INTEGER, campus TEXT, cpf TEXT, contato TEXT, titulo TEXT, salario REAL)"
-            );
-        }
-    }*/
+    @BeforeAll
+    public static void iniciar() {
+        dao = new ProfessorDAO();
+        dao.setTestDatabase(); // usa sqlite em memória
+    }
 
     @Test
     @Order(1)
-    void testInsertProfessor() {
-        Professor p = new Professor();
-        p.setId(1);
-        p.setNome("Kaio");
-        p.setIdade(25);
-        p.setCampus("SI");
-        p.setCpf("00011122233");
-        p.setContato("99999999");
-        p.setTitulo("Mestre");
-        p.setSalario(120000);
+    public void testInsertProfessor() {
+        Professor p = new Professor(
+                0, "Carlos Silva", 40, "Ilha",
+                "12345678900", "(48) 99999-1111",
+                "Mestrado", 5200
+        );
 
         assertTrue(dao.insertProfessor(p));
+        assertEquals(1, dao.getMinhaLista().size());
     }
 
     @Test
     @Order(2)
-    void testUpdateProfessor() {
-        Professor p = dao.getMinhaLista().get(0);
-        p.setNome("Kaio Atualizado");
+    public void testCarregaProfessor() {
+        Professor p = dao.carregaProfessor(1);
 
-        assertTrue(dao.updateProfessor(p));
+        assertNotNull(p);
+        assertEquals("Carlos Silva", p.getNome());
+        assertEquals("Ilha", p.getCampus());
     }
 
     @Test
     @Order(3)
-    void testListar() {
-        var lista = dao.getMinhaLista();
-        assertFalse(lista.isEmpty());
-        assertEquals("Kaio Atualizado", lista.get(0).getNome());
+    public void testUpdateProfessor() {
+        Professor p = dao.carregaProfessor(1);
+
+        p.setNome("Carlos Atualizado");
+        p.setSalario(7000);
+
+        assertTrue(dao.updateProfessor(p));
+
+        Professor atualizado = dao.carregaProfessor(1);
+
+        assertEquals("Carlos Atualizado", atualizado.getNome());
+        assertEquals(7000, atualizado.getSalario());
     }
 
     @Test
     @Order(4)
-    void testDeleteProfessor() {
+    public void testGetMinhaLista() {
+        ArrayList<Professor> lista = dao.getMinhaLista();
+
+        assertNotNull(lista);
+        assertEquals(1, lista.size());
+    }
+
+    @Test
+    @Order(5)
+    public void testDeleteProfessor() {
         assertTrue(dao.deleteProfessor(1));
+        assertEquals(0, dao.getMinhaLista().size());
     }
 }

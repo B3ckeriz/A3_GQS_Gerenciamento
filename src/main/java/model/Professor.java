@@ -1,105 +1,48 @@
 package model;
 
-import dao.ProfessorDAO;
-import java.sql.SQLException;
-import java.util.List;
+public class Professor {
+    private int id;
+    private String nome;
+    private String email;
+    private String senha;
 
-public class Professor extends Pessoa {
+    public Professor() {}
 
-    private String campus;
-    private String cpf;
-    private String contato;
-    private String titulo;
-    private double salario;    // DOUBLE agora compatível com DAO
-    private final ProfessorDAO dao;
-
-    // Construtor padrão
-    public Professor() {
-        this.dao = new ProfessorDAO();
+    public Professor(int id, String nome, String email, String senha) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
     }
 
-    // Construtor resumido
-    public Professor(String campus, String cpf, String contato, String titulo, double salario) {
-        this.campus = campus;
-        this.cpf = cpf;
-        this.contato = contato;
-        this.titulo = titulo;
-        this.salario = salario;
-        this.dao = new ProfessorDAO();
+    public Professor(String nome, String email, String senha) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
     }
 
-    // Construtor completo
-    public Professor(String campus, String cpf, String contato, String titulo, double salario,
-                     int id, String nome, int idade) {
-        super(id, nome, idade);
-        this.campus = campus;
-        this.cpf = cpf;
-        this.contato = contato;
-        this.titulo = titulo;
-        this.salario = salario;
-        this.dao = new ProfessorDAO();
-    }
+    public int getId() { return id; }
 
-    // Getters e Setters
-    public String getCampus() { return campus; }
-    public void setCampus(String campus) { this.campus = campus; }
+    public void setId(int id) { this.id = id; }
 
-    public String getCpf() { return cpf; }
-    public void setCpf(String cpf) { this.cpf = cpf; }
+    public String getNome() { return nome; }
 
-    public String getContato() { return contato; }
-    public void setContato(String contato) { this.contato = contato; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getEmail() { return email; }
 
-    public double getSalario() { return salario; }
-    public void setSalario(double salario) { this.salario = salario; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getSenha() { return senha; }
+
+    public void setSenha(String senha) { this.senha = senha; }
 
     @Override
     public String toString() {
-        return "\n ID: " + getId()
-                + "\n Nome: " + getNome()
-                + "\n Idade: " + getIdade()
-                + "\n Campus: " + getCampus()
-                + "\n CPF: " + getCpf()
-                + "\n Contato: " + getContato()
-                + "\n Título: " + getTitulo()
-                + "\n Salário: " + getSalario()
-                + "\n -----------";
-    }
-
-    /* Métodos de CRUD */
-
-    public List<Professor> getMinhaLista() {
-        return dao.getMinhaLista();
-    }
-
-    public boolean insertProfessor(String campus, String cpf, String contato, String titulo,
-                                   double salario, String nome, int idade) throws SQLException {
-
-        int id = this.maiorID() + 1;
-
-        Professor p = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
-        return dao.insertProfessor(p);
-    }
-
-    public boolean updateProfessor(String campus, String cpf, String contato, String titulo,
-                                   double salario, int id, String nome, int idade) {
-
-        Professor p = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
-        return dao.updateProfessor(p);
-    }
-
-    public boolean deleteProfessor(int id) {
-        return dao.deleteProfessor(id);
-    }
-
-    public Professor carregaProfessor(int id) {
-        return dao.carregaProfessor(id);
-    }
-
-    public int maiorID() throws SQLException {
-        return dao.maiorID();
+        return "Professor{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
