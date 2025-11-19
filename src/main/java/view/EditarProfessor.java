@@ -109,7 +109,7 @@ public class EditarProfessor extends javax.swing.JFrame {
             String titulo = validarTitulo();
             int id = Integer.parseInt(GerenciaProfessores.listaDados[7]);
             
-            boolean sucesso = objetoProfessor.UpdateProfessorBD(
+            boolean sucesso = objetoProfessor.updateProfessor(
                 campus, cpf, contato, titulo, salario, id, nome, idade
             );
             

@@ -174,7 +174,7 @@ public class EditarAluno extends javax.swing.JFrame {
             String curso = validarCurso();
             int faseSelecionada = ARRAY_FASES[fase.getSelectedIndex()];
 
-            boolean sucesso = objetoAluno.updateAlunoBD(curso, faseSelecionada, idAluno, nome, idade);
+            boolean sucesso = objetoAluno.updateAluno(curso, faseSelecionada, idAluno, nome, idade);
 
             if (sucesso) {
                 JOptionPane.showMessageDialog(rootPane, "Aluno alterado com sucesso!");

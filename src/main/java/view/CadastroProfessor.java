@@ -269,7 +269,7 @@ private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {
         String titulo = validarTitulo(arrayTitulo);
         
         // Inserção no banco de dados
-        boolean sucesso = this.objetoProfessor.InsertProfessorBD(
+        boolean sucesso = this.objetoProfessor.insertProfessor(
             campus, cpf, contato, titulo, salario, nome, idade
         );
         
