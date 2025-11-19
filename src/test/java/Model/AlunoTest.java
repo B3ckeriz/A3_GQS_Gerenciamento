@@ -1,5 +1,5 @@
 package Model;
-
+import dao.AlunoDAO;
 import model.Aluno;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,15 +10,19 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Julia Exterkoetter
  */
 public class AlunoTest {
-    
+
+    private AlunoDAO alunoDAO;
     private Aluno aluno;
     
     @BeforeEach
     public void setUp() {
-        // Inicializa um aluno antes de cada teste
+        // Inicializar a classe DAO e criar a tabela necessária no banco em memória
+        alunoDAO = new AlunoDAO();
+        alunoDAO.getConexao();
         aluno = new Aluno("Engenharia de Software", 5, 1, "João Silva", 20);
     }
-    
+
+
     @Test
     public void testConstrutorPadrao() {
         Aluno alunoVazio = new Aluno();
