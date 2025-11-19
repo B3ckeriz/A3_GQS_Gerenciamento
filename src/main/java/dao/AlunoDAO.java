@@ -1,43 +1,43 @@
 package dao;
 
 import model.Aluno;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.logging.*;
 
 public class AlunoDAO {
 
     private static final Logger logger = Logger.getLogger(AlunoDAO.class.getName());
-    private static ArrayList<Aluno> MinhaLista = new ArrayList<>();
 
-    // atributo para permitir banco de testes
-    private String databaseUrl;
+    private String databaseUrl = "jdbc:sqlite:database.db";
+    private boolean isTestMode = false;
 
     public AlunoDAO() {
-        // padrão: arquivo database.db
-        this.databaseUrl = "jdbc:sqlite:database.db";
-        criarTabelaSeNecessario();
+        if (!isTestMode) {
+            criarTabelaSeNecessario();
+        }
     }
 
-    // permite mudar o banco durante os testes
+    // Troca o banco ao rodar testes
     public void setTestDatabase(String url) {
         this.databaseUrl = url;
+        this.isTestMode = true;
     }
 
-    // conexão sempre usando databaseUrl
     public Connection getConexao() {
         try {
             return DriverManager.getConnection(databaseUrl);
         } catch (SQLException e) {
-            throw new RuntimeException("Erro na conexão", e);
+            throw new RuntimeException(e);
         }
     }
 
     private void criarTabelaSeNecessario() {
         String sql = """
             CREATE TABLE IF NOT EXISTS tb_alunos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 nome TEXT NOT NULL,
                 idade INTEGER,
                 curso TEXT,
@@ -55,8 +55,19 @@ public class AlunoDAO {
         }
     }
 
-    public ArrayList<Aluno> getMinhaLista() {
-        MinhaLista.clear();
+    public int maiorID() throws SQLException {
+        String sql = "SELECT MAX(id) AS id FROM tb_alunos";
+
+        try (Connection conn = getConexao();
+             Statement stmt = conn.createStatement();
+             ResultSet res = stmt.executeQuery(sql)) {
+
+            return res.next() ? res.getInt("id") : 0;
+        }
+    }
+
+    public List<Aluno> getMinhaLista() {
+        List<Aluno> lista = new ArrayList<>();
 
         String sql = "SELECT * FROM tb_alunos";
 
@@ -72,27 +83,30 @@ public class AlunoDAO {
                         res.getString("nome"),
                         res.getInt("idade")
                 );
-
-                MinhaLista.add(a);
+                lista.add(a);
             }
 
         } catch (SQLException ex) {
             throw new RuntimeException("Erro ao carregar lista", ex);
         }
 
-        return MinhaLista;
+        return lista;
     }
 
     public boolean insertAluno(Aluno objeto) {
-        String sql = "INSERT INTO tb_alunos (nome, idade, curso, fase) VALUES (?, ?, ?, ?)";
+        String sql = """
+            INSERT INTO tb_alunos (id, nome, idade, curso, fase)
+            VALUES (?, ?, ?, ?, ?)
+        """;
 
         try (Connection conn = getConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, objeto.getNome());
-            stmt.setInt(2, objeto.getIdade());
-            stmt.setString(3, objeto.getCurso());
-            stmt.setInt(4, objeto.getFase());
+            stmt.setInt(1, objeto.getId());
+            stmt.setString(2, objeto.getNome());
+            stmt.setInt(3, objeto.getIdade());
+            stmt.setString(4, objeto.getCurso());
+            stmt.setInt(5, objeto.getFase());
 
             stmt.execute();
             return true;
@@ -102,7 +116,7 @@ public class AlunoDAO {
         }
     }
 
-    public boolean deleteAlunoBD(int id) {
+    public boolean deleteAluno(int id) {
         String sql = "DELETE FROM tb_alunos WHERE id = ?";
 
         try (Connection conn = getConexao();
@@ -133,7 +147,7 @@ public class AlunoDAO {
             stmt.setInt(4, objeto.getFase());
             stmt.setInt(5, objeto.getId());
 
-            stmt.execute();
+            stmt.executeUpdate();
             return true;
 
         } catch (SQLException e) {
@@ -144,46 +158,25 @@ public class AlunoDAO {
     public Aluno carregaAluno(int id) {
         String sql = "SELECT * FROM tb_alunos WHERE id = ?";
 
-        Aluno objeto = new Aluno();
-
         try (Connection conn = getConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+
             ResultSet res = stmt.executeQuery();
 
-            if (res.next()) {
-                objeto.setId(id);
-                objeto.setNome(res.getString("nome"));
-                objeto.setIdade(res.getInt("idade"));
-                objeto.setCurso(res.getString("curso"));
-                objeto.setFase(res.getInt("fase"));
-            }
+            if (!res.next()) return null;
+
+            return new Aluno(
+                    res.getString("curso"),
+                    res.getInt("fase"),
+                    res.getInt("id"),
+                    res.getString("nome"),
+                    res.getInt("idade")
+            );
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao carregar aluno", e);
         }
-
-        return objeto;
     }
-    
-    /**
-    * Retorna o maior ID atualmente presente na tabela tb_alunos.
-    * Lança SQLException para que o chamador (por exemplo Aluno.maiorID()) trate ou propague.
-    */
-    public int maiorID() throws SQLException {
-        String sql = "SELECT MAX(id) AS id FROM tb_alunos";
-
-        try (Connection conn = getConexao();
-             Statement stmt = conn.createStatement();
-             ResultSet res = stmt.executeQuery(sql)) {
-
-            if (res.next()) {
-                return res.getInt("id");
-            } else {
-                return 0;
-            }
-        }
-    }
-
 }

@@ -15,20 +15,23 @@ public class AlunoDAOTest {
 
     @BeforeAll
     static void setupDatabase() throws Exception {
+
         dao = new AlunoDAO();
+        dao.setTestDatabase("jdbc:sqlite:memory:testdb?mode=memory&cache=shared");
 
-        // Banco em memória
-        dao.setTestDatabase("jdbc:sqlite::memory:");
-
-        // Criar tabela correta
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite::memory:")) {
-            conn.createStatement().execute(
-                "CREATE TABLE tb_alunos (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "nome TEXT, idade INTEGER, curso TEXT, fase INTEGER)"
-            );
+        try (Connection conn = dao.getConexao()) {
+            conn.createStatement().execute("""
+                CREATE TABLE tb_alunos (
+                    id INTEGER PRIMARY KEY,
+                    nome TEXT,
+                    idade INTEGER,
+                    curso TEXT,
+                    fase INTEGER
+                )
+            """);
         }
     }
+
 
     @Test
     @Order(1)
@@ -81,7 +84,7 @@ public class AlunoDAOTest {
     @Order(5)
     void testDeleteAluno() {
         int id = dao.getMinhaLista().get(0).getId();
-        assertTrue(dao.deleteAlunoBD(id));
+        assertTrue(dao.deleteAluno(id));
         assertEquals(0, dao.getMinhaLista().size());
     }
 }
