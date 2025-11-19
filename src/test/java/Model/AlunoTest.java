@@ -4,6 +4,7 @@ import model.Aluno;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
 
 /**
  * Testes unitários para a classe Aluno
@@ -27,8 +28,14 @@ public class AlunoTest {
     public void testConstrutorPadrao() {
         Aluno alunoVazio = new Aluno();
         assertNotNull(alunoVazio, "Aluno não deveria ser nulo");
+        assertNull(alunoVazio.getNome());
+        assertNull(alunoVazio.getCurso());
+        assertEquals(0, alunoVazio.getId());
+        assertEquals(0, alunoVazio.getFase());
+        assertEquals(0, alunoVazio.getIdade());
     }
-    
+
+
     @Test
     public void testConstrutorComCursoEFase() {
         Aluno alunoSimples = new Aluno("Ciência da Computação", 3);
