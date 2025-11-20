@@ -97,34 +97,36 @@ public class EditarProfessor extends javax.swing.JFrame {
         this.titulo.setSelectedIndex(indexTitulo);
         this.salarioFormatado.setText(editSalario(GerenciaProfessores.listaDados[6]));
     }
-    
+
     private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String nome = validarNome();
-            String campus = validarCampus();
-            String cpf = validarCPF();
-            String contato = validarContato();
-            int idade = validarIdade();
-            int salario = validarSalario();
-            String titulo = validarTitulo();
-            int id = Integer.parseInt(GerenciaProfessores.listaDados[7]);
-            
-            boolean sucesso = objetoProfessor.updateProfessor(
-                campus, cpf, contato, titulo, salario, id, nome, idade
+            String nome = validarNome();              // String
+            String campus = validarCampus();          // String
+            String cpf = validarCPF();                // String
+            String contato = validarContato();        // String
+            int idade = validarIdade();               // int
+            double salario = validarSalario();        // double
+            String titulo = validarTitulo();          // String
+            int id = Integer.parseInt(GerenciaProfessores.listaDados[7]); // int
+
+            // Corrigindo a ordem dos parâmetros nesta chamada
+            boolean sucesso = this.objetoProfessor.updateProfessor(
+                    nome, idade, campus, cpf, contato, titulo, salario, id
             );
-            
+
             if (sucesso) {
                 JOptionPane.showMessageDialog(rootPane, "Professor alterado com sucesso!");
                 this.dispose();
             }
-            
+
         } catch (Mensagens erro) {
             JOptionPane.showMessageDialog(rootPane, erro.getMessage());
         } catch (NumberFormatException erro2) {
             JOptionPane.showMessageDialog(rootPane, "Informe um número.");
         }
     }
-    
+
+
     // Métodos de validação
     
     private String validarNome() throws Mensagens {

@@ -24,7 +24,11 @@ public class AlunoDAO {
     public void setTestDatabase(String url) {
         this.databaseUrl = url;
         this.isTestMode = true;
+
+        // Criar a tabela caso ainda não exista no banco de testes
+        criarTabelaSeNecessario();
     }
+
 
     public Connection getConexao() {
         try {

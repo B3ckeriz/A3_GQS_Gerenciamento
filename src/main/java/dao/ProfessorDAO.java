@@ -43,7 +43,7 @@ public class ProfessorDAO {
                 cpf TEXT UNIQUE NOT NULL,
                 contato TEXT NOT NULL,
                 titulo TEXT NOT NULL,
-                salario INTEGER NOT NULL
+                salario REAL NOT NULL
             );
             """;
         Statement stmt = conn.createStatement();
@@ -64,10 +64,10 @@ public class ProfessorDAO {
 
     public boolean insertProfessor(Professor p) {
         String sql = """
-            INSERT INTO tb_professores
-            (nome, idade, campus, cpf, contato, titulo, salario)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """;
+        INSERT INTO tb_professores
+        (nome, idade, campus, cpf, contato, titulo, salario)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, p.getNome());
@@ -76,13 +76,15 @@ public class ProfessorDAO {
             stmt.setString(4, p.getCpf());
             stmt.setString(5, p.getContato());
             stmt.setString(6, p.getTitulo());
-            stmt.setInt(7, p.getSalario());
+            stmt.setDouble(7, p.getSalario()); // Corrigido para aceitar tipo double
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
+            e.printStackTrace(); // Adicionado log para facilitar depuração
             return false;
         }
     }
+
 
     public boolean updateProfessor(Professor p) {
         String sql = """
@@ -98,7 +100,7 @@ public class ProfessorDAO {
             stmt.setString(4, p.getCpf());
             stmt.setString(5, p.getContato());
             stmt.setString(6, p.getTitulo());
-            stmt.setInt(7, p.getSalario());
+            stmt.setDouble(7, p.getSalario());
             stmt.setInt(8, p.getId());
             stmt.executeUpdate();
             return true;
@@ -135,7 +137,7 @@ public class ProfessorDAO {
                     rs.getString("cpf"),
                     rs.getString("contato"),
                     rs.getString("titulo"),
-                    rs.getInt("salario")
+                    rs.getDouble("salario")
                 );
                 lista.add(p);
             }
@@ -162,7 +164,7 @@ public class ProfessorDAO {
                     rs.getString("cpf"),
                     rs.getString("contato"),
                     rs.getString("titulo"),
-                    rs.getInt("salario")
+                    rs.getDouble("salario")
                 );
             }
 

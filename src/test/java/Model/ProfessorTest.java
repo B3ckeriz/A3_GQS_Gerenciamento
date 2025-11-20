@@ -10,33 +10,32 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Julia Exterkoetter
  */
 public class ProfessorTest {
-    
+
     private Professor professor;
-    
+
     @BeforeEach
     public void setUp() {
-        // Inicializa um professor antes de cada teste
-        professor = new Professor("Pedra Branca", "123.456.789-00", "(48) 99999-9999", 
-                                  "Doutor", 8000, 1, "Dr. Carlos Silva", 45);
+        professor = new Professor(1, "Dr. Carlos Silva", 45, "Pedra Branca", "123.456.789-00", "(48) 99999-9999", "Doutor", 8000);
     }
-    
+
     @Test
     public void testConstrutorPadrao() {
         Professor profVazio = new Professor();
         assertNotNull(profVazio, "Professor não deveria ser nulo");
     }
-    
+
     @Test
     public void testConstrutorComAtributos() {
-        Professor profSimples = new Professor("Tubarão", "987.654.321-00", "(48) 88888-8888", 
-                                              "Mestre", 6000);
-        assertEquals("Tubarão", profSimples.getCampus());
+        Professor profSimples = new Professor("Tubarão", 45, "Campus Exemplo", "987.654.321-00",
+                "(48) 88888-8888", "Mestre", 6000);
+        assertEquals("Campus Exemplo", profSimples.getCampus());
         assertEquals("987.654.321-00", profSimples.getCpf());
         assertEquals("(48) 88888-8888", profSimples.getContato());
         assertEquals("Mestre", profSimples.getTitulo());
         assertEquals(6000, profSimples.getSalario());
     }
-    
+
+
     @Test
     public void testConstrutorCompleto() {
         assertEquals(1, professor.getId());

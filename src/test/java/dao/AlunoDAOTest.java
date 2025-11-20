@@ -10,34 +10,52 @@ public class AlunoDAOTest {
 
     private static AlunoDAO dao;
 
-    @BeforeAll
-    static void setupDatabase() throws Exception {
+    @BeforeEach
+    public void prepararBancoDeTestes() {
         dao = new AlunoDAO();
-        dao.setTestDatabase("jdbc:sqlite::memory:");
+        dao.setTestDatabase("jdbc:sqlite:database_test.db");
 
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite::memory:")) {
-            conn.createStatement().execute(
-                "CREATE TABLE tb_alunos (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "nome TEXT, idade INTEGER, curso TEXT, fase INTEGER)"
-            );
+        // Garantir que a tabela esteja criada e limpa
+        try (Connection conn = dao.getConexao();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute("DROP TABLE IF EXISTS tb_alunos");
+            stmt.execute("""
+                CREATE TABLE tb_alunos (
+                    id INTEGER PRIMARY KEY,
+                    nome TEXT NOT NULL,
+                    idade INTEGER,
+                    curso TEXT,
+                    fase INTEGER
+                )
+            """);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao preparar banco de testes", e);
         }
     }
 
     @Test
-    void testInsertAluno() {
-        Aluno a = new Aluno();
-        a.setNome("Kaio");
-        a.setIdade(25);
-        a.setCurso("SI");
-        a.setFase(5);
+    public void testInsertAluno() {
+        Aluno aluno = new Aluno("Engenharia", 3, 1, "João Silva", 22);
 
-        assertTrue(dao.insertAluno(a));
+        boolean resultado = dao.insertAluno(aluno);
+        assertTrue(resultado, "Falha ao inserir aluno");
+
+        // Verificar se o aluno foi inserido
+        List<Aluno> alunos = dao.getMinhaLista();
+        assertEquals(1, alunos.size());
+        assertEquals("João Silva", alunos.get(0).getNome());
     }
 
     @Test
-    void testGetMinhaLista() {
-        List<Aluno> lista = dao.getMinhaLista();
-        assertNotNull(lista);
+    public void testGetMinhaLista() {
+        // Inserir registros de teste
+        dao.insertAluno(new Aluno("Engenharia", 3, 1, "João Silva", 22));
+
+        // Testar se os registros foram retornados corretamente
+        List<Aluno> alunos = dao.getMinhaLista();
+        assertEquals(1, alunos.size());
+        assertEquals("João Silva", alunos.get(0).getNome());
     }
 }

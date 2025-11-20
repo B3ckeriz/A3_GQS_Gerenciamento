@@ -13,7 +13,7 @@ public class Professor {
     private String cpf;
     private String contato;
     private String titulo;
-    private int salario;
+    private double salario;
 
     private final ProfessorDAO dao;
 
@@ -24,7 +24,7 @@ public class Professor {
 
     // Construtor completo com ID
     public Professor(int id, String nome, int idade, String campus,
-                     String cpf, String contato, String titulo, int salario) {
+                     String cpf, String contato, String titulo, double salario) {
 
         this.id = id;
         this.nome = nome;
@@ -39,7 +39,7 @@ public class Professor {
 
     // Construtor completo sem ID
     public Professor(String nome, int idade, String campus,
-                     String cpf, String contato, String titulo, int salario) {
+                     String cpf, String contato, String titulo, double salario) {
 
         this.nome = nome;
         this.idade = idade;
@@ -83,9 +83,9 @@ public class Professor {
 
     public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public int getSalario() { return salario; }
+    public double getSalario() { return salario; }
 
-    public void setSalario(int salario) { this.salario = salario; }
+    public void setSalario(double salario) { this.salario = salario; }
 
     // ==============================
     // toString
@@ -113,7 +113,7 @@ public class Professor {
     }
 
     public boolean insertProfessor(String nome, int idade, String campus,
-                                   String cpf, String contato, String titulo, int salario)
+                                   String cpf, String contato, String titulo, double salario)
             throws SQLException {
 
         int id = this.maiorID() + 1;
@@ -123,7 +123,7 @@ public class Professor {
 
     public boolean updateProfessor(String nome, int idade, String campus,
                                    String cpf, String contato, String titulo,
-                                   int salario, int id) {
+                                   double salario, int id) {
 
         Professor p = new Professor(id, nome, idade, campus, cpf, contato, titulo, salario);
         return dao.updateProfessor(p);

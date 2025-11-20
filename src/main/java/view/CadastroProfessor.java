@@ -265,14 +265,21 @@ private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {
         String cpf = validarCPF();
         String contato = validarContato();
         int idade = validarIdade();
-        int salario = validarSalario();
+        double salario = validarSalario();
         String titulo = validarTitulo(arrayTitulo);
         
         // Inserção no banco de dados
         boolean sucesso = this.objetoProfessor.insertProfessor(
-            campus, cpf, contato, titulo, salario, nome, idade
+                nome,
+                idade,
+                campus,
+                cpf,
+                contato,
+                titulo,
+                salario
         );
-        
+
+
         if (sucesso) {
             JOptionPane.showMessageDialog(rootPane, "Professor cadastrado com sucesso!"); 
             this.dispose();
