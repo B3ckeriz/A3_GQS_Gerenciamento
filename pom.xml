@@ -60,6 +60,20 @@
 			<artifactId>poi</artifactId>
 			<version>5.2.3</version>
 		</dependency>
+		
+		<!-- LOGGING PADRÃO (SLF4J) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.12</version>
+		</dependency>
+
+		<!-- IMPLEMENTAÇÃO DO LOGGER (simples e compatível com Sonar) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>2.0.12</version>
+		</dependency>
 
 		<!-- ======================== TESTES ============================ -->
 

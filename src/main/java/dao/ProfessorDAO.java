@@ -18,7 +18,7 @@ public class ProfessorDAO {
             this.conn = DriverManager.getConnection(url);
             criarTabelaSeNecessario();
         } catch (SQLException e) {
-            LOGGER.error("Erro ao conectar ao banco de dados", e);
+            LOGGER.error("Erro ao conectar ao banco de dados DAO", e);
         }
 
     }
@@ -30,7 +30,7 @@ public class ProfessorDAO {
             this.conn = DriverManager.getConnection(url);
             criarTabelaSeNecessario();
         } catch (SQLException e) {
-            LOGGER.error("Erro ao conectar ao banco de dados", e);
+            LOGGER.error("Erro ao conectar ao banco de dados de teste", e);
         }
 
     }
@@ -65,7 +65,7 @@ public class ProfessorDAO {
                 return rs.getInt("id");
             }
         } catch (SQLException e) {
-        LOGGER.error("Erro ao conectar ao banco de dados", e);
+        LOGGER.error("Erro em maiorID", e);
     }
 
         return 0;
@@ -90,7 +90,7 @@ public class ProfessorDAO {
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
-            LOGGER.error("Erro ao conectar ao banco de dados", e); // Adicionado log para facilitar depuração
+            LOGGER.error("Erro em InsertProfessor", e); // Adicionado log para facilitar depuração
             return false;
         }
     }
@@ -152,7 +152,7 @@ public class ProfessorDAO {
                 lista.add(p);
             }
         } catch (SQLException e) {
-            LOGGER.error("Erro ao conectar ao banco de dados", e);
+            LOGGER.error("Erro getMinhaLista", e);
         }
 
         return lista;
@@ -179,7 +179,7 @@ public class ProfessorDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.error("Erro ao conectar ao banco de dados", e);
+            LOGGER.error("Erro ao conectar ao CarregarProfessor", e);
         }
         return null;
     }

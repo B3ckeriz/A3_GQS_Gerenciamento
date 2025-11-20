@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+
 public class GerenciaAlunos extends javax.swing.JFrame {
 
     private final Aluno objetoAluno = new Aluno();
@@ -233,7 +234,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
             } catch (IOException | NumberFormatException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Erro ao exportar para Excel: " + e.getMessage());
+                throw new RuntimeException("Erro ao exportar para Excel: ");
             }
         }
     }
