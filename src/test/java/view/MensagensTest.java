@@ -1,7 +1,7 @@
+package view;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import view.Mensagens;   // AJUSTE PARA O PACOTE
 
 public class MensagensTest {
 
