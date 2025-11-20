@@ -81,4 +81,38 @@ public class AlunoDAOTest {
         assertEquals("Aluno Teste", alunos.get(0).getNome());
         assertEquals("João Silva", alunos.get(1).getNome());
     }
+
+    @Test
+    public void testDeleteAluno() {
+        Aluno aluno = dao.carregaAluno(1);
+        assertNotNull(aluno, "Aluno com ID 1 deveria existir antes da deleção.");
+        assertTrue(dao.deleteAluno(1), "O método deleteAluno deveria retornar true para uma remoção bem-sucedida.");
+        Aluno alunoRemovido = dao.carregaAluno(1);
+        assertNull(alunoRemovido, "O aluno com ID 1 não deveria mais existir após a remoção.");
+        assertTrue(dao.deleteAluno(1), "O método deleteAluno deveria retornar true mesmo quando não há registro a ser removido.");
+    }
+
+    @Test
+    public void testUpdateAluno() {
+        Aluno aluno = dao.carregaAluno(1);
+        assertNotNull(aluno, "Aluno com ID 1 deveria existir para ser atualizado.");
+
+        aluno.setNome("Aluno Atualizado");
+        aluno.setIdade(25);
+        aluno.setCurso("Novo Curso");
+        aluno.setFase(4);
+
+        assertTrue(dao.updateAluno(aluno), "O método updateAluno deveria retornar true para um update bem-sucedido.");
+
+        Aluno alunoAtualizado = dao.carregaAluno(1);
+        assertNotNull(alunoAtualizado, "O registro atualizado deveria existir.");
+        assertEquals("Aluno Atualizado", alunoAtualizado.getNome());
+        assertEquals(25, alunoAtualizado.getIdade());
+        assertEquals("Novo Curso", alunoAtualizado.getCurso());
+        assertEquals(4, alunoAtualizado.getFase());
+
+        // Tentar atualizar um registro inexistente (por exemplo, ID 999)
+        Aluno alunoInexistente = new Aluno("Teste", 1, 999, "Inexistente", 30);
+        assertTrue(dao.updateAluno(alunoInexistente), "O método updateAluno deve retornar true mesmo que o ID não exista.");
+    }
 }
