@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import util.ExcelExporter;
 
 public class GerenciaProfessores extends javax.swing.JFrame {
 
@@ -166,108 +167,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 
     // ✅ MÉTODO CORRIGIDO - Removido e.printStackTrace()
     private void exportXls() throws IOException {
-
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivos Excel", "xls");
-
-        chooser.setFileFilter(filter);
-        chooser.setDialogTitle("Salvar arquivo");
-        chooser.setAcceptAllFileFilterUsed(false);
-
-        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-
-            String path = chooser.getSelectedFile().toString().concat(".xls");
-
-            try {
-                File fileXLS = new File(path);
-
-                if (fileXLS.exists()) {
-                    boolean deleted = fileXLS.delete();
-                    if (!deleted) {
-                        throw new IOException("Não foi possível substituir o arquivo existente.");
-                    }
-                }
-
-                if (!fileXLS.createNewFile()) {
-                    throw new IOException("Não foi possível criar o arquivo.");
-                }
-
-                try (Workbook book = new HSSFWorkbook();
-                     FileOutputStream fileOut = new FileOutputStream(fileXLS)) {
-
-                    Sheet sheet = book.createSheet("Minha folha de trabalho 1");
-                    sheet.setDisplayGridlines(true);
-
-                    for (int i = 0; i < this.jTableProfessores.getRowCount(); i++) {
-                        Row row = sheet.createRow(i);
-                        for (int j = 0; j < this.jTableProfessores.getColumnCount(); j++) {
-                            Cell cell = row.createCell(j);
-                            if (i == 0) {
-                                cell.setCellValue(this.jTableProfessores.getColumnName(j));
-                            }
-                        }
-                    }
-
-                    int firstRow = 1;
-
-                    for (int linha = 0; linha < this.jTableProfessores.getRowCount(); linha++) {
-                        Row row2 = sheet.createRow(firstRow++);
-                        for (int coluna = 0; coluna < this.jTableProfessores.getColumnCount(); coluna++) {
-
-                            Cell cell2 = row2.createCell(coluna);
-                            Object value = this.jTableProfessores.getValueAt(linha, coluna);
-
-                            if (value instanceof Double) {
-                                cell2.setCellValue((Double) value);
-                            } else if (value instanceof Float) {
-                                cell2.setCellValue((Float) value);
-                            } else if (value instanceof Integer) {
-                                cell2.setCellValue((Integer) value);
-                            } else {
-                                cell2.setCellValue(value != null ? value.toString() : "");
-                            }
-                        }
-                    }
-
-                    book.write(fileOut);
-                }
-
-                // ✅ Mensagem de sucesso ao usuário
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Arquivo Excel exportado com sucesso em:\n" + path,
-                    "Exportação Concluída",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-
-            } catch (IOException e) {
-                // ✅ Log seguro para debug (vai para arquivo de log, não para console)
-                LOGGER.log(Level.SEVERE, "Erro ao exportar arquivo Excel para: " + path, e);
-                
-                // ✅ Mensagem amigável ao usuário
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Não foi possível exportar o arquivo.\nVerifique se você tem permissão de escrita no local selecionado.",
-                    "Erro na Exportação",
-                    JOptionPane.ERROR_MESSAGE
-                );
-                
-                throw new RuntimeException("Erro ao exportar para Excel", e);
-                
-            } catch (NumberFormatException e) {
-                // ✅ Log específico para erro de formatação
-                LOGGER.log(Level.WARNING, "Erro ao formatar números durante exportação", e);
-                
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Erro ao processar dados numéricos da tabela.\nVerifique se todos os valores estão formatados corretamente.",
-                    "Erro de Formatação",
-                    JOptionPane.ERROR_MESSAGE
-                );
-                
-                throw new RuntimeException("Erro de formatação ao exportar para Excel", e);
-            }
-        }
+        ExcelExporter.exportToExcel(jTableProfessores, this);
     }
 
     private void menuGerenciaAlunoActionPerformed(java.awt.event.ActionEvent evt) {
