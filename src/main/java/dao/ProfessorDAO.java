@@ -46,21 +46,24 @@ public class ProfessorDAO {
                 salario REAL NOT NULL
             );
             """;
-        Statement stmt = conn.createStatement();
-        stmt.execute(sql);
-    }
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        }
+}
 
     public int maiorID() {
-        try {
-            String sql = "SELECT MAX(id) AS id FROM tb_professores";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) return rs.getInt("id");
+        String sql = "SELECT MAX(id) AS id FROM tb_professores";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
+
 
     public boolean insertProfessor(Professor p) {
         String sql = """
