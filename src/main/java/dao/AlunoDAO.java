@@ -6,11 +6,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
+import exceptions.DatabaseConnectionException;
 
 public class AlunoDAO {
 
-    private static final Logger logger = Logger.getLogger(AlunoDAO.class.getName());
-    
     private String databaseUrl = "jdbc:sqlite:database.db";
     private boolean isTestMode = false;
 
@@ -34,7 +33,7 @@ public class AlunoDAO {
         try {
             return DriverManager.getConnection(databaseUrl);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseConnectionException("Erro ao tentar conectar ao banco de dados.", e);
         }
     }
 
@@ -55,7 +54,7 @@ public class AlunoDAO {
             stmt.execute(sql);
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao criar tabela tb_alunos", e);
+            throw new DatabaseConnectionException("Erro ao criar tabela tb_alunos", e);
         }
     }
 
@@ -73,7 +72,7 @@ public class AlunoDAO {
     public List<Aluno> getMinhaLista() {
         List<Aluno> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM tb_alunos";
+        String sql = "SELECT curso, fase, id, nome, idade FROM tb_alunos";
 
         try (Connection conn = getConexao();
              Statement stmt = conn.createStatement();
@@ -116,7 +115,7 @@ public class AlunoDAO {
             return true;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao inserir aluno", e);
+            throw new DatabaseConnectionException("Erro ao inserir aluno", e);
         }
     }
 
@@ -131,7 +130,7 @@ public class AlunoDAO {
             return true;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao deletar aluno", e);
+            throw new DatabaseConnectionException("Erro ao deletar aluno", e);
         }
     }
 
@@ -155,12 +154,12 @@ public class AlunoDAO {
             return true;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar aluno", e);
+            throw new DatabaseConnectionException("Erro ao atualizar aluno", e);
         }
     }
 
     public Aluno carregaAluno(int id) {
-        String sql = "SELECT * FROM tb_alunos WHERE id = ?";
+        String sql = "SELECT curso, fase, id, nome, idade FROM tb_alunos";
 
         try (Connection conn = getConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -180,7 +179,7 @@ public class AlunoDAO {
             );
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao carregar aluno", e);
+            throw new DatabaseConnectionException("Erro ao carregar aluno", e);
         }
     }
 }
