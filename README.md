@@ -1,5 +1,7 @@
 # Sistema de Gestão de Alunos e Professores  
-Projeto A3 – Gestão e Qualidade de Software  
+Projeto A3 – Gestão e Qualidade de Software
+
+Video: https://youtu.be/qD37JcIu3_Y?si=8Xr__5OqKGzaZIuc
 
 ## Descrição Geral  
 Este repositório contém o desenvolvimento do Plano de Testes e da automação aplicada ao Sistema de Gestão de Alunos e Professores. O projeto utiliza práticas de qualidade de software, incluindo testes automatizados, integração contínua e análise estática do código.
