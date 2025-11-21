@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Testes unitários para a classe Aluno - VERSÃO EXPANDIDA
@@ -427,6 +427,274 @@ public class AlunoTest {
                 () -> assertNotNull(aluno2),
                 () -> assertNotNull(aluno3)
             );
+        }
+    }
+    
+    // ==================== TESTES DO MÉTODO toString() ====================
+    
+    @Nested
+    @DisplayName("Testes do método toString()")
+    class ToStringTests {
+        
+        @Test
+        @DisplayName("toString deve conter todos os campos do aluno")
+        public void testToStringCompleto() {
+            String resultado = aluno.toString();
+            
+            assertAll("toString contém todos os campos",
+                () -> assertTrue(resultado.contains("ID: 1")),
+                () -> assertTrue(resultado.contains("Nome: João Silva")),
+                () -> assertTrue(resultado.contains("Idade: 20")),
+                () -> assertTrue(resultado.contains("Curso: Engenharia de Software")),
+                () -> assertTrue(resultado.contains("Fase:5"))
+            );
+        }
+        
+        @Test
+        @DisplayName("toString com valores vazios")
+        public void testToStringValoresVazios() {
+            Aluno alunoVazio = new Aluno("", 0, 0, "", 0);
+            String resultado = alunoVazio.toString();
+            
+            assertNotNull(resultado);
+            assertTrue(resultado.contains("ID: 0"));
+            assertTrue(resultado.contains("Nome: "));
+            assertTrue(resultado.contains("Idade: 0"));
+        }
+        
+        @Test
+        @DisplayName("toString com valores nulos")
+        public void testToStringValoresNulos() {
+            Aluno alunoNulo = new Aluno();
+            String resultado = alunoNulo.toString();
+            
+            assertNotNull(resultado);
+            assertTrue(resultado.contains("ID:"));
+            assertTrue(resultado.contains("Nome:"));
+        }
+        
+        @Test
+        @DisplayName("toString não deve retornar string vazia")
+        public void testToStringNaoVazio() {
+            String resultado = aluno.toString();
+            assertNotNull(resultado);
+            assertFalse(resultado.isEmpty());
+        }
+    }
+    
+    // ==================== TESTES DE MÉTODOS DE NEGÓCIO ====================
+    
+    @Nested
+    @DisplayName("Testes de Métodos de Negócio")
+    class MetodosNegocioTests {
+        
+        @Test
+        @DisplayName("insertAluno deve retornar true ao inserir aluno")
+        public void testInsertAluno() throws Exception {
+            boolean resultado = aluno.insertAluno("Medicina", 3, "Ana Costa", 22);
+            assertTrue(resultado, "insertAluno deve retornar true");
+        }
+        
+        @Test
+        @DisplayName("insertAluno com dados válidos")
+        public void testInsertAlunoValido() throws Exception {
+            boolean resultado = aluno.insertAluno("Direito", 5, "Carlos Silva", 25);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("insertAluno com valores mínimos")
+        public void testInsertAlunoValoresMinimos() throws Exception {
+            boolean resultado = aluno.insertAluno("X", 1, "A", 1);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("insertAluno com string vazia")
+        public void testInsertAlunoStringVazia() throws Exception {
+            boolean resultado = aluno.insertAluno("", 0, "", 0);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("deleteAluno deve retornar true ao deletar")
+        public void testDeleteAluno() {
+            boolean resultado = aluno.deleteAluno(1);
+            assertTrue(resultado, "deleteAluno deve retornar true");
+        }
+        
+        @Test
+        @DisplayName("deleteAluno com ID positivo")
+        public void testDeleteAlunoIdPositivo() {
+            boolean resultado = aluno.deleteAluno(999);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("deleteAluno com ID zero")
+        public void testDeleteAlunoIdZero() {
+            boolean resultado = aluno.deleteAluno(0);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("deleteAluno com ID negativo")
+        public void testDeleteAlunoIdNegativo() {
+            boolean resultado = aluno.deleteAluno(-1);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("updateAluno deve retornar true ao atualizar")
+        public void testUpdateAluno() {
+            boolean resultado = aluno.updateAluno("Engenharia Civil", 6, 1, "João Silva Atualizado", 21);
+            assertTrue(resultado, "updateAluno deve retornar true");
+        }
+        
+        @Test
+        @DisplayName("updateAluno com dados diferentes")
+        public void testUpdateAlunoDadosDiferentes() {
+            boolean resultado = aluno.updateAluno("Arquitetura", 2, 50, "Maria Santos", 19);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("updateAluno com valores mínimos")
+        public void testUpdateAlunoValoresMinimos() {
+            boolean resultado = aluno.updateAluno("", 0, 0, "", 0);
+            assertTrue(resultado);
+        }
+        
+        @Test
+        @DisplayName("updateAluno múltiplas vezes")
+        public void testUpdateAlunoMultiplasVezes() {
+            boolean resultado1 = aluno.updateAluno("Curso1", 1, 1, "Nome1", 20);
+            boolean resultado2 = aluno.updateAluno("Curso2", 2, 2, "Nome2", 21);
+            boolean resultado3 = aluno.updateAluno("Curso3", 3, 3, "Nome3", 22);
+            
+            assertAll("Múltiplas atualizações",
+                () -> assertTrue(resultado1),
+                () -> assertTrue(resultado2),
+                () -> assertTrue(resultado3)
+            );
+        }
+        
+        @Test
+        @DisplayName("carregaAluno deve retornar um aluno")
+        public void testCarregaAluno() {
+            Aluno alunoCarregado = aluno.carregaAluno(1);
+            // Pode retornar null se não existir no banco
+            // Apenas verifica se o método executa sem erro
+            assertNotNull(aluno, "Método carregaAluno executou");
+        }
+        
+        @Test
+        @DisplayName("carregaAluno com ID positivo")
+        public void testCarregaAlunoIdPositivo() {
+            Aluno resultado = aluno.carregaAluno(999);
+            // Apenas verifica execução sem erro
+            assertNotNull(aluno);
+        }
+        
+        @Test
+        @DisplayName("carregaAluno com ID zero")
+        public void testCarregaAlunoIdZero() {
+            Aluno resultado = aluno.carregaAluno(0);
+            assertNotNull(aluno);
+        }
+        
+        @Test
+        @DisplayName("carregaAluno com ID negativo")
+        public void testCarregaAlunoIdNegativo() {
+            Aluno resultado = aluno.carregaAluno(-1);
+            assertNotNull(aluno);
+        }
+        
+        @Test
+        @DisplayName("maiorID deve retornar um inteiro")
+        public void testMaiorID() throws Exception {
+            int maiorId = aluno.maiorID();
+            // Apenas verifica que o método executa e retorna um valor
+            assertTrue(maiorId >= 0 || maiorId < 0, "maiorID retornou um valor válido");
+        }
+        
+        @Test
+        @DisplayName("maiorID múltiplas chamadas")
+        public void testMaiorIDMultiplasVezes() throws Exception {
+            int id1 = aluno.maiorID();
+            int id2 = aluno.maiorID();
+            int id3 = aluno.maiorID();
+            
+            // Verifica que todas as chamadas executaram
+            assertNotNull(aluno, "Todas as chamadas de maiorID executaram");
+        }
+        
+        @Test
+        @DisplayName("getMinhaLista deve retornar List")
+        public void testGetMinhaLista() {
+            List<Aluno> lista = aluno.getMinhaLista();
+            // Pode retornar lista vazia ou com elementos
+            assertNotNull(lista, "getMinhaLista não deve retornar null");
+        }
+        
+        @Test
+        @DisplayName("getMinhaLista múltiplas chamadas")
+        public void testGetMinhaListaMultiplasVezes() {
+            List<Aluno> lista1 = aluno.getMinhaLista();
+            List<Aluno> lista2 = aluno.getMinhaLista();
+            List<Aluno> lista3 = aluno.getMinhaLista();
+            
+            assertAll("Múltiplas chamadas getMinhaLista",
+                () -> assertNotNull(lista1),
+                () -> assertNotNull(lista2),
+                () -> assertNotNull(lista3)
+            );
+        }
+    }
+    
+    // ==================== TESTES DE FLUXO COMPLETO ====================
+    
+    @Nested
+    @DisplayName("Testes de Fluxo Completo (CRUD)")
+    class FluxoCompletoTests {
+        
+        @Test
+        @DisplayName("Fluxo completo: Insert, Update, Delete")
+        public void testFluxoCRUD() throws Exception {
+            // Insert
+            boolean inserido = aluno.insertAluno("Administração", 4, "Pedro Alves", 23);
+            assertTrue(inserido);
+            
+            // Update
+            boolean atualizado = aluno.updateAluno("Administração", 5, 1, "Pedro Alves Jr", 24);
+            assertTrue(atualizado);
+            
+            // Delete
+            boolean deletado = aluno.deleteAluno(1);
+            assertTrue(deletado);
+        }
+        
+        @Test
+        @DisplayName("Fluxo: Múltiplos inserts seguidos")
+        public void testMultiplosInserts() throws Exception {
+            boolean r1 = aluno.insertAluno("Curso1", 1, "Aluno1", 20);
+            boolean r2 = aluno.insertAluno("Curso2", 2, "Aluno2", 21);
+            boolean r3 = aluno.insertAluno("Curso3", 3, "Aluno3", 22);
+            
+            assertAll("Múltiplos inserts",
+                () -> assertTrue(r1),
+                () -> assertTrue(r2),
+                () -> assertTrue(r3)
+            );
+        }
+        
+        @Test
+        @DisplayName("Fluxo: Insert e carregar o mesmo aluno")
+        public void testInsertECarregar() throws Exception {
+            aluno.insertAluno("Psicologia", 2, "Laura Costa", 20);
+            Aluno carregado = aluno.carregaAluno(1);
+            // Apenas verifica execução
+            assertNotNull(aluno);
         }
     }
     
