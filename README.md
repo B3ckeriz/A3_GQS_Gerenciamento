@@ -5,7 +5,7 @@ Projeto A3 – Gestão e Qualidade de Software
 
 [![Vídeo no YouTube](https://img.shields.io/badge/Vídeo-YouTube-red?style=for-the-badge&logo=youtube)](https://youtu.be/qD37JcIu3_Y?si=8Xr__5OqKGzaZIuc)
 [![Slide no Canva](https://img.shields.io/badge/Slide-Canva-00C4CC?style=for-the-badge&logo=canva&logoColor=white)](https://www.canva.com/design/DAG4cErd7xc/fWrRN880e0tIhmFqVcFZ3A/edit?utm_content=DAG4cErd7xc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
-[![Documento no OneDrive](https://img.shields.io/badge/Documento-OneDrive-0078D4?style=for-the-badge&logo=microsoft-onedrive&logoColor=white)](https://1drv.ms/w/c/76ff8fbfe36afa3b/EWW53t46HQ5Jsv7sg4KJgzYBwe3oDnYoFmofERr_sU3q-A?e=ZR3g5B)
+[![Relatório](https://img.shields.io/badge/Relatório-PDF-red?style=for-the-badge)](src/main/java/view/A3%20Gestão%20e%20Qualidade%20de%20Software%20(1).pdf)
 
 
 ## Descrição Geral  
@@ -46,6 +46,33 @@ O objetivo principal é demonstrar a aplicação de testes unitários e de integ
 
 ---
 
+## Requisitos do Sistema
+### Requisitos Funcionais 
+RF01 – Cadastro, o sistema deve permitir o cadastro de alunos através de um formulário contendo: nome, curso, data de nascimento e fase.
+
+RF02 – Edição, sistema deve permitir editar qualquer informação previamente cadastrada de um aluno.
+
+RF03 – Exclusão, o sistema deve permitir excluir um aluno da base de dados.
+
+RF04 – Listagem, o sistema deve exibir uma tabela com todos os alunos cadastrados.
+
+RF05 – Atualização, tabela de alunos deve refletir alterações quando atualizada.
+
+RF06 – Cadastro, o sistema deve permitir cadastrar professores utilizando os campos: nome, campus, CPF, contato, data de nascimento, salário e título.
+
+RF07 – Edição, o sistema deve permitir modificar os dados de um professor.
+
+RF08 – Exclusão, o sistema deve permitir remover professores da base de dados.
+
+RF09 – Listagem, o sistema deve exibir uma tabela com os professores cadastrados.
+
+RF10 – Atualização, a tabela de professores deve refletir alterações quando atualizada.
+
+
+### Requisitos Não Funcionais
+RNF01 – Tema claro e escuro, o sistema deve oferecer suporte aos temas claro e escuro, permitindo alternância.
+
+RNF02 – Feedback visual, o sistema deve apresentar mensagens de sucesso, erro ou confirmação ao realizar operações de cadastro, edição ou exclusão.
 ## Objetivo Acadêmico  
 Este repositório atende aos requisitos da A3 de Gestão e Qualidade de Software, incluindo:  
 - Planejamento e execução de testes  
