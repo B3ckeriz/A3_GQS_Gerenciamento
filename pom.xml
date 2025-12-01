@@ -203,10 +203,7 @@
 
 				<configuration>
 					<excludes>
-						<exclude>**/view/**/*</exclude>
 						<exclude>**/principal/Principal.class</exclude>
-						<exclude>**/*Form.class</exclude>
-						<exclude>**/*Form$*.class</exclude>
 						<exclude>**/*Tela*.class</exclude>
 						<exclude>**/*Tela*$*.class</exclude>
 						<exclude>**/*$initComponents.class</exclude>

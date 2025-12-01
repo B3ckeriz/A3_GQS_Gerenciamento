@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 // Classe CadastroAluno herda as características de javax.swing.JFrame
 public class CadastroAluno extends javax.swing.JFrame {
     
-    private transient Aluno objetoAluno; // Apontador para a classe Aluno
+    transient Aluno objetoAluno; // Apontador para a classe Aluno
     
     // Construtor
     public CadastroAluno() {
@@ -202,7 +202,7 @@ public class CadastroAluno extends javax.swing.JFrame {
             // Adicionando dados validados no database
             if (this.objetoAluno.insertAluno(curso, fase, nome, idade)){
                 JOptionPane.showMessageDialog(rootPane, "Aluno cadastrado com sucesso!");
-                
+
                 this.dispose();
             }
         
