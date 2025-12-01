@@ -3,6 +3,10 @@ package Model;
 import model.Professor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+
+import java.sql.SQLException;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -125,4 +129,33 @@ public class ProfessorTest {
         professor.setTitulo("");
         assertEquals("", professor.getTitulo());
     }
+
+    @Test
+    public void testInsertProfessor() throws SQLException {
+        final String NOME = "Osmar";
+        final int IDADE = 60;
+        final String CAMPUS = "dib";
+        final String CPF = "0170060000";
+        final String CONTATO = "48988569433";
+        final String TITULO = "professor";
+        final double SALARIO = 1200.0;
+
+        boolean resultado = professor.insertProfessor(
+                NOME, IDADE, CAMPUS, CPF, CONTATO, TITULO, SALARIO
+        );
+
+        assertTrue(resultado, "Falha ao inserir professor");
+
+        List<Professor> professores = professor.getMinhaLista();
+        Professor professorInserido = professores.get(professores.size() - 1);
+
+        assertEquals(NOME, professorInserido.getNome());
+        assertEquals(IDADE, professorInserido.getIdade());
+        assertEquals(CAMPUS, professorInserido.getCampus());
+        assertEquals(CPF, professorInserido.getCpf());
+        assertEquals(CONTATO, professorInserido.getContato());
+        assertEquals(TITULO, professorInserido.getTitulo());
+        assertEquals(SALARIO, professorInserido.getSalario(), 0.001);
+    }
+
 }
