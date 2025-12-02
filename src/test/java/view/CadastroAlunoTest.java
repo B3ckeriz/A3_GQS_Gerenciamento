@@ -2,12 +2,11 @@ package view;
 
 import com.toedter.calendar.JDateChooser;
 import model.Aluno;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
@@ -19,6 +18,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class CadastroAlunoTest {
     private static final String CURSO_ADMINISTRACAO = "Administração";
@@ -29,21 +29,38 @@ public class CadastroAlunoTest {
     @Mock
     private Aluno alunoMock;
 
-    @InjectMocks
     private CadastroAluno cadastroAluno;
-
     private JTextField campoNome;
     private JComboBox<String> comboCurso;
     private JComboBox<String> comboFase;
     private JDateChooser seletorData;
     private JButton botaoConfirmar;
 
+    @BeforeAll
+    static void setupHeadless() {
+        System.setProperty("java.awt.headless", "false"); // Mudando para false
+        System.setProperty("swing.defaultlaf", "javax.swing.plaf.metal.MetalLookAndFeel");
+    }
+
+
     @BeforeEach
     void configurarTeste() throws Exception {
-        MockitoAnnotations.openMocks(this);
-        cadastroAluno = new CadastroAluno();
-        cadastroAluno.objetoAluno = alunoMock;
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                try {
+                    cadastroAluno = new CadastroAluno();
+                    cadastroAluno.objetoAluno = alunoMock;
+                    inicializarCampos();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao inicializar componentes Swing", e);
+        }
+    }
 
+    private void inicializarCampos() throws Exception {
         Field[] campos = CadastroAluno.class.getDeclaredFields();
         for (Field campo : campos) {
             campo.setAccessible(true);
@@ -67,26 +84,17 @@ public class CadastroAlunoTest {
         }
     }
 
-
     @Test
     void deveRealizarCadastroComSucesso() throws SQLException, AWTException, InterruptedException {
         when(alunoMock.insertAluno(anyString(), anyInt(), anyString(), anyInt()))
                 .thenReturn(true);
 
-        preencherFormularioCadastro();
-
-        Robot robot = new Robot();
-
-        SwingUtilities.invokeLater(() -> {
-            botaoConfirmar.doClick();
-        });
-
-        Thread.sleep(1000);
-
-        robot.keyPress(KeyEvent.VK_ENTER);
-        robot.keyRelease(KeyEvent.VK_ENTER);
-
+        SwingUtilities.invokeLater(this::preencherFormularioCadastro);
         Thread.sleep(500);
+
+        SwingUtilities.invokeLater(() -> botaoConfirmar.doClick());
+        Thread.sleep(500);
+
         verify(alunoMock).insertAluno(
                 eq(CURSO_ADMINISTRACAO),
                 eq(PRIMEIRA_FASE),
@@ -106,6 +114,4 @@ public class CadastroAlunoTest {
         dataNascimento.set(Calendar.DAY_OF_MONTH, 1);
         seletorData.setDate(dataNascimento.getTime());
     }
-
-
 }
