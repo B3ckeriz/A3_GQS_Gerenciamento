@@ -41,7 +41,6 @@ public class CadastroAlunoTest {
     @BeforeEach
     void configurarTeste() throws Exception {
         MockitoAnnotations.openMocks(this);
-        cadastroAluno = new CadastroAluno();
         cadastroAluno.objetoAluno = alunoMock;
 
         Field[] campos = CadastroAluno.class.getDeclaredFields();

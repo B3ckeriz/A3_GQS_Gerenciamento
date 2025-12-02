@@ -260,15 +260,15 @@ public class CadastroAluno extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCancelar;
-    private javax.swing.JButton bConfirmar;
-    private javax.swing.JComboBox<String> curso;
-    private javax.swing.JComboBox<String> fase;
-    private com.toedter.calendar.JDateChooser idade;
+    javax.swing.JButton bConfirmar;
+    javax.swing.JComboBox<String> curso;
+    javax.swing.JComboBox<String> fase;
+    com.toedter.calendar.JDateChooser idade;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField nome;
+    javax.swing.JTextField nome;
     // End of variables declaration//GEN-END:variables
 }
